@@ -10,7 +10,7 @@ const Header = (currentUser) => (
                 <li role="presentation"><a href="#">Contact</a></li>
                 <li role="presentation"><a href="#">AboutUs</a></li>
                 <li role="presentation"><a href="#">News</a></li>
-
+                
             </ul>
                 
         </div>
@@ -29,6 +29,7 @@ const Header = (currentUser) => (
                         <ul class="nav navbar-nav">
 
                             <li><a href="#">Ask Question</a></li>
+                            <li><a href="#">SignIn</a></li>
                         </ul>
                     </div>
                 </div>
