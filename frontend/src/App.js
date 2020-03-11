@@ -5,6 +5,7 @@ import Header from './components/header/header.component'
 import Homepage from './pages/homepage/homepage.component';
 import LoginPage from './pages/loginpage/loginpage.component';
 
+
 import './App.css';
 
 class App extends React.Component{
@@ -22,6 +23,7 @@ class App extends React.Component{
         <Switch>
           <Route exact path='/' component={Homepage}/>
           <Route exact path='/login' component={LoginPage}/>
+
         </Switch>
       </div>
     )
