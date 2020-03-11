@@ -1,7 +1,11 @@
 import React from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+
 import Header from './components/header/header.component'
-import './App.css';
 import Homepage from './pages/homepage/homepage.component';
+import LoginPage from './pages/loginpage/loginpage.component';
+
+import './App.css';
 
 class App extends React.Component{
   constructor(){
@@ -15,7 +19,10 @@ class App extends React.Component{
     return (
       <div className = 'App'>
         <Header currentUser={this.state.currentUser}/>
-        <Homepage/>
+        <Switch>
+          <Route exact path='/' component={Homepage}/>
+          <Route exact path='/login' component={LoginPage}/>
+        </Switch>
       </div>
     )
     
