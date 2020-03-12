@@ -10,16 +10,16 @@ class Homepage extends React.Component {
 
     this.state = {
       posts: [],
-      isloaded: false
+      isloaded: true
     };
   }
-  async componentDidMount(){
-    let res = await fetch('https://backend-json-dap.herokuapp.com/questions');
-    let jsonData=await res.json();
-   let  arrayOfQuestion=jsonData.data;
-    this.setState({posts:arrayOfQuestion,isloaded:true})
+//   async componentDidMount(){
+//     let res = await fetch('https://backend-json-dap.herokuapp.com/questions');
+//     let jsonData=await res.json();
+//     let arrayOfQuestion=jsonData.data;
+//     this.setState({posts:arrayOfQuestion,isloaded:true})
     
-}
+// }
 
   render() {
     if (!this.state.isloaded)

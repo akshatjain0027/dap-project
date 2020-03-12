@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import ReactModal from 'react-modal';
 
 import Header from './components/header/header.component'
 import Homepage from './pages/homepage/homepage.component';
@@ -8,18 +9,32 @@ import LoginPage from './pages/loginpage/loginpage.component';
 
 import './App.css';
 
+ReactModal.setAppElement('#root');
+
 class App extends React.Component{
   constructor(){
     super();
 
     this.state = {
-      currentUser: null
+      currentUser: null,
+      showModal:false
     }
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
   }
+  
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
+  
   render(){
     return (
       <div className = 'App'>
-        <Header currentUser={this.state.currentUser}/>
+        <Header showModal={this.state.showModal} handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal}/>
         <Switch>
           <Route exact path='/' component={Homepage}/>
           <Route exact path='/login' component={LoginPage}/>
