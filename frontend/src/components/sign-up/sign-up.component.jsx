@@ -26,7 +26,7 @@ class SignUp extends React.Component{
     render(){
         return(
             <div className='sign-up'>
-                <h1>New User don't have an account</h1>
+                <h1>I don't have an account</h1>
                 <span>Sign up with your email</span>
 
                 <form action="" onSubmit={this.handleSubmit}>
@@ -36,7 +36,7 @@ class SignUp extends React.Component{
                     <FormInput label="Password" type='password' name='password' value={this.state.password} required handleChange={this.handleChange}/>
                     <FormInput label="Confirm Password" type='password' name='confirm_password' value={this.state.confirm_password} required handleChange={this.handleChange}/>
 
-                    <button type='submit'>Register</button>
+                    <button className='signupbutton btn btn-primary' type='submit'>SignUp</button>
                 </form>
 
             </div>

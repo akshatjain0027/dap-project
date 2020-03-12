@@ -1,0 +1,19 @@
+.form-input{
+    margin: 10% 0;
+    width: 70%;
+}
+
+.forminput{
+    border: none;
+    border-bottom: 1px solid grey;
+    width: 100%;
+}
+
+.forminput:focus{
+    outline: none;
+    border-bottom: 2px solid black;
+}
+
+.formlabel{
+    font-size: large;
+}
