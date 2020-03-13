@@ -42,7 +42,7 @@ class Header extends React.Component{
                 
                 <ul class="nav nav-pills">
                     <li role="presentation" class="active"><Link to='/'>Home</Link></li>
-                    <li role="presentation"><a href="#">Contact</a></li>
+                    <li role="presentation" class="active"><Link to='/contact'>Contact</Link></li>
                     <li role="presentation"><a href="#">AboutUs</a></li>
                     <li role="presentation"><a href="#">News</a></li>
                 </ul>
@@ -69,13 +69,17 @@ class Header extends React.Component{
                                     contentLabel="ask question modal"
                                     className='Modal'
                                     >
+                                 
+
                                     <h1>Ask Your Question Here!</h1>
                                     <form action="" onSubmit={this.handleSubmit}>
                                         <FormInput label="Question?" type="text" name='question' value={this.state.question} handleChange={this.handleChange} />
                                         <button className='ask btn btn-primary' type='submit' onClick={this.handleCloseModal}>Ask</button>
+                                        <button className='cancel btn btn-warning' onClick={this.handleCloseModal}>Cancel</button>
+
                                     </form>
+                                
                                     
-                                    <button className='cancel btn btn-warning' onClick={this.handleCloseModal}>Cancel</button>
                                 </ReactModal>
                                 
                                 <li><Link to="/login">SignIn</Link></li>

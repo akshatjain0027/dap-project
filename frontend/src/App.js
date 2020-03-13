@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import Header from './components/header/header.component'
 import Homepage from './pages/homepage/homepage.component';
 import LoginPage from './pages/loginpage/loginpage.component';
+import ContactPage from './pages/contactpage/contactpage.component';
 
 
 import './App.css';
@@ -27,6 +28,8 @@ class App extends React.Component{
         <Switch>
           <Route exact path='/' component={Homepage}/>
           <Route exact path='/login' component={LoginPage}/>
+          <Route exact path='/contact' component={ContactPage}/>
+
 
         </Switch>
       </div>
