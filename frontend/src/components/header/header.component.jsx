@@ -9,6 +9,7 @@ class Header extends React.Component{
     constructor(){
         super();
         this.state={
+            question:"",
             showModal:false
         }
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -21,6 +22,17 @@ class Header extends React.Component{
       
     handleCloseModal () {
         this.setState({ showModal: false });
+    }
+
+    handleChange = event => {
+        const {value, name} = event.target;
+
+        this.setState({[name]: value})
+    }
+
+    handleSubmit = async event => {
+        event.preventDefault();
+        const {question} = this.state;
     }
 
     render(){
@@ -58,8 +70,11 @@ class Header extends React.Component{
                                     className='Modal'
                                     >
                                     <h1>Ask Your Question Here!</h1>
-                                    <FormInput label="Question?" type="text"/>
-                                    <button className='ask btn btn-primary' onClick={this.handleCloseModal}>Ask</button>
+                                    <form action="" onSubmit={this.handleSubmit}>
+                                        <FormInput label="Question?" type="text" name='question' value={this.state.question} handleChange={this.handleChange} />
+                                        <button className='ask btn btn-primary' type='submit' onClick={this.handleCloseModal}>Ask</button>
+                                    </form>
+                                    
                                     <button className='cancel btn btn-warning' onClick={this.handleCloseModal}>Cancel</button>
                                 </ReactModal>
                                 

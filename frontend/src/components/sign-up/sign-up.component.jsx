@@ -1,6 +1,7 @@
 import React from 'react'
 import './sign-up.styles.css'
 import FormInput from '../form-input/form-input.component';
+const axios = require('axios');
 
 class SignUp extends React.Component{
     constructor(){
@@ -13,9 +14,37 @@ class SignUp extends React.Component{
         }
     }
 
-    handleSubmit = async event => (
-        event.preventDefault()
-    )
+    handleSubmit = async event => {
+        event.preventDefault();
+        const {name, email, password, confirm_password} = this.state;
+
+        if(password!==confirm_password){
+            alert("Password doesn't match");
+            return
+        }
+
+        let res = await axios({
+            method:'post',
+            url: "https://backend-json-dap.herokuapp.com/users",
+            data:{
+                name:name,
+                email:email,
+                password:password
+            },
+            crossDomain: true
+        });
+
+        const token = res.data.token;
+        localStorage.setItem('token', token)
+
+        this.setState({
+            name:'',
+            email:'',
+            password:'',
+            confirm_password:'',
+        })
+
+    }
 
     handleChange = event =>{
         const {value, name} = event.target;
