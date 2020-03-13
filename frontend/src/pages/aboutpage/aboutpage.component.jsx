@@ -5,7 +5,7 @@ class About extends React.Component{
     
     render(){
         return(
-        <>
+    
             <div className='header1'>
                 
                 <nav class="nav nav-pills">
@@ -17,12 +17,7 @@ class About extends React.Component{
                     
             </div>
 
-            <div className='block-example'>
-
-
-            </div>
-    
-        </>    
+          
         )
     }
 }

@@ -1,9 +1,25 @@
-.querybutton{
+.submitbutton{
     width: 70%;
     padding: 2% 0;
     font-size: 15px;
-}
-
-.querybutton{
     background-color: gainsboro;
+    color: black;
+}
+.Phone{
+    background-color: rgb(113, 113, 238);
+    width: 50%;
+    text-align: center;
+    padding: 2%;
+    border-radius: 20% 0;
+    margin: 50px;
+    color: white;
+}
+.email{
+    background-color: rgb(113, 113, 238);
+    width: 50%;
+    text-align: center;
+    padding: 2%;
+    border-radius: 20% 0;
+    margin: 50px;
+    color: white;
 }

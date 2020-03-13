@@ -30,16 +30,22 @@ class ContactPage extends React.Component {
         return(
             <div className='Contact-Us'>
 
-                <div className='Contact Information'>
-                    <div className='col-xs-6'>
+                <div className='ContactInformation'>
+                    <div className='col-xs-6 contact'>
                         <h1>Contact Information</h1>
-                        <h2>Phone Numbers</h2>
-                        <p>India: +91-1236547896</p>
-                        <p>India: +91-7896541230</p>
+
+                        <div className='Phone'>
+                            <h3>Phone Numbers</h3>
+                            <p>India: +91-1236547896</p>
+                            <p>India: +91-7896541230</p>
+                        </div>
                         
-                        <h2>Email Address</h2>
-                        <p>General Query: info@ipu.ac.in</p>
-                        <p>Student Support: help@ipu.ac.in</p>
+                        <div className='email'>
+                            <h3>Email Address</h3>
+                            <p>General Query: info@ipu.ac.in</p>
+                            <p>Student Support: help@ipu.ac.in</p>
+                        </div>
+                        
                     </div>
                 </div>
 
