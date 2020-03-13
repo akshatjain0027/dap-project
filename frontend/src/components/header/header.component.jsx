@@ -43,7 +43,7 @@ class Header extends React.Component{
                 <ul class="nav nav-pills">
                     <li role="presentation" class="active"><Link to='/'>Home</Link></li>
                     <li role="presentation" class="active"><Link to='/contact'>Contact</Link></li>
-                    <li role="presentation"><a href="#">AboutUs</a></li>
+                    <li role="presentation" class="active"><Link to='/about'>About AskUss</Link></li>
                     <li role="presentation"><a href="#">News</a></li>
                 </ul>
                     
