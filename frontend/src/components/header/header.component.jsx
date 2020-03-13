@@ -74,6 +74,7 @@ class Header extends React.Component{
                                     <h1>Ask Your Question Here!</h1>
                                     <form action="" onSubmit={this.handleSubmit}>
                                         <FormInput label="Question?" type="text" name='question' value={this.state.question} handleChange={this.handleChange} />
+                                        <FormInput label="Tags(Optional)" type="text" name='question' value={this.state.question} handleChange={this.handleChange} />
                                         <button className='ask btn btn-primary' type='submit' onClick={this.handleCloseModal}>Ask</button>
                                         <button className='cancel btn btn-warning' onClick={this.handleCloseModal}>Cancel</button>
 
