@@ -1,5 +1,7 @@
 import React from 'react';
 import './aboutpage.styles.css'
+import { Link } from 'react-router-dom';
+
 
 class About extends React.Component{
     
@@ -11,7 +13,7 @@ class About extends React.Component{
                 <nav class="nav nav-pills">
                     <li role="presentation"><a href="#">What is Ask USS?</a></li>
                     <li role="presentation"><a href="#">Writing Standards</a></li>
-                    <li role="presentation"><a href="#">Team</a></li>
+                    <li role="presentation" class="active"><Link to='/about/team'>Team</Link></li>
 
                 </nav>
                     

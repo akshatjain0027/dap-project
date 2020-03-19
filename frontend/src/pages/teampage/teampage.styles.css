@@ -1,0 +1,9 @@
+.team{
+    background-color: rgb(48, 135, 206);
+    width: 100%;
+    text-align: center;
+    padding: 10%;
+    border-radius: 10% 0;
+    margin: 50px;
+    color:white;
+}
