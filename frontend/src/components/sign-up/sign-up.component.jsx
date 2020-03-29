@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { signup } from "../../redux/auth/auth.actions";
+import { signUp } from "../../redux/auth/auth.actions";
 import "./sign-up.styles.css";
 import FormInput from "../form-input/form-input.component";
 
@@ -30,7 +30,7 @@ class SignUp extends React.Component {
       password: password,
       password2: confirm_password
     };
-    this.props.signup(data);
+    this.props.signUp(data);
     this.setState({
       name: "",
       email: "",
@@ -94,4 +94,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default connect(null, { signup: signup })(SignUp);
+export default connect(null, { signUp: signUp })(SignUp);
