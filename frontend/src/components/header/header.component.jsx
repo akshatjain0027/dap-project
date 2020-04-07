@@ -42,8 +42,8 @@ class Header extends React.Component{
                 
                 <ul class="nav nav-pills">
                     <li role="presentation" class="active"><Link to='/'>Home</Link></li>
-                    <li role="presentation" class="active"><Link to='/contact'>Contact</Link></li>
-                    <li role="presentation" class="active"><Link to='/about'>About AskUss</Link></li>
+                    <li role="presentation" class="active contact"><Link to='/contact'>Contact</Link></li>
+                    <li role="presentation" class="active about"><Link to='/about'>About AskUss</Link></li>
                     <li role="presentation"><a href="#">News</a></li>
                 </ul>
                     
@@ -64,7 +64,7 @@ class Header extends React.Component{
     
                             <ul class="nav navbar-nav">
     
-                                <li><a href="#" onClick={this.handleOpenModal}>Ask Question</a></li>
+                                <li className="askquestion"><a href="#" onClick={this.handleOpenModal}>Ask Question</a></li>
                                 <ReactModal isOpen={this.state.showModal} 
                                     contentLabel="ask question modal"
                                     className='Modal'

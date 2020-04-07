@@ -14,6 +14,7 @@ import ProfilePage from './pages/profilePage/profilepage.component';
 
 
 import './App.css';
+import Gmail from './pages/gmail.component';
 
 ReactModal.setAppElement('#root');
 
@@ -39,7 +40,7 @@ class App extends React.Component{
           <Route exact path='/about/team' component={TeamPage}/>
 
           <Route exact path='/profile' component={ProfilePage}/>
-
+          <Route exact path='/mailLogin' component={Gmail}/>
 
 
         </Switch>

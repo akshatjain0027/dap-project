@@ -77,6 +77,8 @@ class SignIn extends React.Component {
 					>
 						SignIn
 					</button>
+					<button class="g-signin2" data-onsuccess="onSignIn">SignIn</button>
+
 				</form>
 			</div>
 		);
