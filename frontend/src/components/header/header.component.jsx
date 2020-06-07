@@ -33,6 +33,14 @@ const CustTab = withStyles(theme => ({
     },
     "&:hover": {
       backgroundColor: "rgb(255, 255, 255, .3)",
+      color: "white",
+      textDecoration: "none"
+    },
+    "&:focus": {
+      color: "white",
+      textDecoration: "none",
+      outline: "none",
+      borderBottom: "4px solid white"
     },
     zIndex: "10000"
   },
@@ -41,6 +49,57 @@ const CustTab = withStyles(theme => ({
     fontSize: "1.5em"
   }
 }))(Tab)
+
+const styles = theme => ({
+  mainBox: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems:"center",
+    width: "100%"
+  },
+  title: {
+    color: "white",
+    "&:hover" : {
+      textDecoration: "none",
+      color: "white"
+    },
+    "&:focus": {
+      outline: "none",
+      color: "white",
+      textDecoration: "none"
+    }
+  },
+  sideBox: {
+    display: "flex", 
+    flexDirection: "row", 
+    justifyContent: "flex-end", 
+    width: "60%", 
+    alignItems: "center"
+  },
+  askQuestion: {
+    padding: "20px", 
+    fontSize: "1.3rem",
+    cursor: "pointer"    
+  },
+  signIn: {
+    padding: "20px", 
+    fontSize: "1.3rem", 
+    color: "white",
+    "&:hover": {
+      color: "white",
+      textDecoration: "none",
+    },
+    "&:focus": {
+      outline: "none",
+      color: "white",
+      textDecoration: "none"
+    }
+  },
+  modalButton: {
+    margin: "1%",
+    fontSize: "1.2rem"
+  }
+});
 
 class Header extends React.Component {
   constructor() {
@@ -74,6 +133,7 @@ class Header extends React.Component {
 
 
   render() {
+    const { classes } = this.props;
     const questionModal =
       <ReactModal
         isOpen={this.state.showModal}
@@ -96,43 +156,47 @@ class Header extends React.Component {
             value={this.state.question}
             handleChange={this.handleChange}
           />
-          <button
-            className="ask btn btn-primary"
+          <Button
+            className={classes.modalButton}
+            variant="contained"
+            color="primary"
             type="submit"
             onClick={this.handleCloseModal}
           >
             Ask
-          </button>
-          <button
-            className="cancel btn btn-warning"
+          </Button>
+          <Button
+            className={classes.modalButton}
+            variant="contained"
+            color="secondary"
             onClick={this.handleCloseModal}
           >
             Cancel
-          </button>
+          </Button>
         </form>
       </ReactModal>
 
     return (
       <AppBar>
         <Toolbar>
-          <Box display="flex" flexDirection="row" alignItems="center" width="100%">
+          <Box className={classes.mainBox}>
             <Box width="10%">
-              <Typography variant="h4" component={Link} to="/" style={{ color: "white" }}>
+              <Typography variant="h4" component={Link} to="/" className={classes.title}>
                 AskUSICT
               </Typography>
             </Box>
             <Box width="30%">
-              <CustTabs indicatorColor="primary">
+              <CustTabs>
                 <CustTab label="Home" component={Link} to="/" tabIndex={0} />
                 <CustTab label="Contact" component={Link} to="/contact" tabIndex={1} />
                 <CustTab label="About Us" component={Link} to="/about" tabIndex={2} />
               </CustTabs>
             </Box>
-            <Box display="flex" flexDirection="row" justifyContent="flex-end" width="60%" alignItems="center">
-              <Typography variant="h5" style={{ padding: "20px", fontSize: "1.2rem" }} onClick={this.handleOpenModal}>
+            <Box className={classes.sideBox}>
+              <Typography variant="h5" onClick={this.handleOpenModal} className={classes.askQuestion}>
                 Ask Question
               </Typography>
-              <Typography variant="h5" style={{ padding: "20px", fontSize: "1.2rem", color: "white" }} component={Link} to="/login">
+              <Typography variant="h5" component={Link} to="/login" className={classes.signIn}>
                 SignIn
               </Typography>
             </Box>
@@ -144,4 +208,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default withStyles(styles)(Header);

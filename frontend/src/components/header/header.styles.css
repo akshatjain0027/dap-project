@@ -1,19 +1,10 @@
-.header{
-    width: 100%;
-}
-.ask{
-    margin: 1%;
-}
-.cancel{
-    margin: 1%;
-}
 .Modal{
     position: absolute;
     top: 100px;
     left: 30%;
     right: 30%;
     bottom: 150px;
-    border: 3px solid rgb(137, 137, 233);
+    border: 2px solid rgb(137, 137, 233);
     background-color: #fff ;
     overflow: auto;
     outline: none;
