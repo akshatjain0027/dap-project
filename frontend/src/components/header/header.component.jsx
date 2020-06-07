@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ReactModal from "react-modal";
-
-import "./header.styles.css";
 import FormInput from "../form-input/form-input.component";
 import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, makeStyles } from "@material-ui/core";
 
@@ -95,6 +93,19 @@ const styles = theme => ({
       textDecoration: "none"
     }
   },
+  Modal: {
+    position: "absolute",
+    top: "100px",
+    left: "30%",
+    right: "30%",
+    bottom: "150px",
+    border: "2px solid rgb(137, 137, 233)",
+    backgroundColor: "#fff",
+    overflow: "auto",
+    outline: "none",
+    padding: "50px",
+    borderRadius: "4px"
+  },
   modalButton: {
     margin: "1%",
     fontSize: "1.2rem"
@@ -138,7 +149,7 @@ class Header extends React.Component {
       <ReactModal
         isOpen={this.state.showModal}
         contentLabel="ask question modal"
-        className="Modal"
+        className={classes.Modal}
       >
         <h1>Ask Your Question Here!</h1>
         <form action="" onSubmit={this.handleSubmit}>
