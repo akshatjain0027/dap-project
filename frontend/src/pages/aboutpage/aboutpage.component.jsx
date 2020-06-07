@@ -8,7 +8,7 @@ class About extends React.Component{
     render(){
         return(
     
-            <div className='header1'>
+            <div className='header1 about'>
                 
                 <nav class="nav nav-pills">
                     <li role="presentation"><a href="#">What is Ask USS?</a></li>

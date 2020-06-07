@@ -3,7 +3,7 @@ import Reflux from "reflux";
 import "./homepage.styles.css";
 import Year from "../../components/year/year.component";
 import Loader from 'react-loader-spinner';
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, Typography, List, ListItem, ListItemText } from "@material-ui/core";
 import user from "../user.png";
 import candidates from "../candidates.png";
 import HomepageStore, { Actions } from "./homepageStore";
