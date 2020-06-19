@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Drawer, Typography, withStyles, Hidden, AppBar, Toolbar, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions } from "@material-ui/core";
+import { Box, Drawer, Typography, withStyles, Hidden, AppBar, Toolbar, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, ListSubheader, TextField } from "@material-ui/core";
 import user from "../user.png";
 import candidates from "../candidates.png";
 
@@ -13,7 +13,53 @@ const CustomDrawer = withStyles(theme => ({
 
 class AnswerPage extends React.Component {
     constructor() {
-        super()
+        super();
+        this.state = {
+            commentBoxOpen: false,
+            comments: [
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                },
+                {
+                    author: "Akshat Jain",
+                    commentText: "Thanks a lot. This answer was very helpful",
+                    image: "https://krourke.org/img/md_avatar.svg"
+                }
+            ]
+        }
+    }
+
+    handleCommentButtonClick = () => {
+        this.setState({
+            commentBoxOpen: !this.state.commentBoxOpen
+        })
     }
 
     getDrawerContent = () => {
@@ -24,7 +70,7 @@ class AnswerPage extends React.Component {
                 </Typography>
                 <Divider />
                 <List>
-                    <ListItem alignItems="center" button>
+                    <ListItem button>
                         <ListItemAvatar>
                             <Avatar src="https://krourke.org/img/md_avatar.svg" />
                         </ListItemAvatar>
@@ -32,7 +78,7 @@ class AnswerPage extends React.Component {
                             primary={
                                 <Typography variant="h5">
                                     Deepanshu Singh Chauhan
-                                        </Typography>
+                                </Typography>
                             }
                         />
                     </ListItem>
@@ -91,10 +137,69 @@ class AnswerPage extends React.Component {
                     <Button style={{ fontSize: "1.2rem" }}>
                         UpVote
                     </Button>
-                    <Button style={{ fontSize: "1.2rem" }}>
+                    <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
                         Comment
                     </Button>
                 </CardActions>
+            </Card>
+        )
+    }
+
+    getCommentCard = () => {
+        const { comments } = this.state;
+        return(
+            <Card elevation={5} style={{ margin: "2% 6%" }}>
+                <CardContent>
+                    <List subheader={
+                        <Typography variant="h5" style={{ padding: "8px 16px"}}>
+                            Comments
+                        </Typography>
+                    }>  
+                    <Divider/>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                        <ListItem style={{ width: "50%" }}>
+                            <TextField
+                                variant="outlined"
+                                label="Your Comment"
+                                placeholder="Write Your comment here..."
+                                style={{ width: "100%"}}
+                                size="medium"
+                            />
+                        </ListItem>
+                        <Button variant="contained" color="primary" style={{ width: "10%", margin: "1.5%"}}>
+                            Post
+                        </Button>
+                    </div>
+                    <Divider/>
+                        {
+                            comments.map((comment,index) => {
+                                return(
+                                    <div key={index}>
+                                        <ListItem>
+                                            <ListItemAvatar>
+                                                <Avatar src={comment.image} />
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={
+                                                    <Typography variant="h6">
+                                                        {comment.author}
+                                                    </Typography>
+                                                }
+                                                secondary={
+                                                    <Typography variant="subtitle1">
+                                                        {comment.commentText}
+                                                    </Typography>
+                                                }
+                                            />
+                                        </ListItem>
+                                        <Divider />
+                                    </div>                                    
+                                )
+                            })
+                        }
+                        
+                    </List>
+                </CardContent>
             </Card>
         )
     }
@@ -115,6 +220,9 @@ class AnswerPage extends React.Component {
                     </div>
                     <div>
                         {this.getAnswerCard()}
+                    </div>
+                    <div>
+                        {this.state.commentBoxOpen? this.getCommentCard() :null}
                     </div>
                 </div>
             </div>
