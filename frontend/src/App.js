@@ -14,6 +14,7 @@ import { Router } from "react-router-dom";
 import history from "./utils/history";
 
 import "./App.css";
+import AnswerPage from "./pages/answersPage/answerPage";
 
 ReactModal.setAppElement("#root");
 
@@ -31,12 +32,7 @@ class App extends React.Component {
       <div className="App">
         <Router history={history}>
           <div>
-            <Header
-              showModal={this.state.showModal}
-              handleOpenModal={this.handleOpenModal}
-              handleCloseModal={this.handleCloseModal}
-            />
-
+            <Header/>
             <Switch>
               <Route exact path="/" component={Homepage} />
               <Route exact path="/login" component={LoginPage} />
@@ -44,7 +40,7 @@ class App extends React.Component {
               <Route exact path="/contact" component={ContactPage} />
               <Route exact path="/about" component={AboutPage} />
               <Route exact path="/about/team" component={TeamPage} />
-
+              <Route exact path="/question/:id" component={AnswerPage}/>
               <Route exact path="/profile" component={ProfilePage} />
             </Switch>
           </div>
