@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Drawer, Typography, withStyles, Hidden, AppBar, Toolbar, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, ListSubheader, TextField } from "@material-ui/core";
-import user from "../user.png";
+import { Drawer, Typography, withStyles, Hidden, AppBar, Toolbar, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, ListSubheader, TextField, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
 import candidates from "../candidates.png";
+import AnswerFormDialog from "../../components/answerFormDialog";
 
 const CustomDrawer = withStyles(theme => ({
     paperAnchorDockedLeft: {
@@ -16,6 +16,7 @@ class AnswerPage extends React.Component {
         super();
         this.state = {
             commentBoxOpen: false,
+            answerDialogOpen: false,
             comments: [
                 {
                     author: "Akshat Jain",
@@ -62,6 +63,18 @@ class AnswerPage extends React.Component {
         })
     }
 
+    handleAnswerDialogClose = () => {
+        this.setState({
+            answerDialogOpen: false
+        })
+    }
+
+    handleAnswerDialogOpen = () => {
+        this.setState({
+            answerDialogOpen: true
+        })
+    }
+
     getDrawerContent = () => {
         return(
             <CustomDrawer elevation={15} variant="permanent">
@@ -102,7 +115,7 @@ class AnswerPage extends React.Component {
                         <Typography variant="h3" style={{ paddingTop: "1.3rem" }}>
                             What are you doing?
                         </Typography>
-                        <Button variant="contained" color="primary" style={{ fontSize: "1rem" }}>
+                        <Button variant="contained" color="primary" style={{ fontSize: "1rem" }} onClick={this.handleAnswerDialogOpen}>
                             Answer
                         </Button>
                     </div>
@@ -124,6 +137,7 @@ class AnswerPage extends React.Component {
                         </Typography>
                     }
                 />
+                <Divider/>
                 <CardMedia
                     image={candidates}
                     style={{ paddingTop: "50%"}}
@@ -133,6 +147,7 @@ class AnswerPage extends React.Component {
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
                 </CardContent>
+                <Divider/>
                 <CardActions disableSpacing>
                     <Button style={{ fontSize: "1.2rem" }}>
                         UpVote
@@ -207,6 +222,7 @@ class AnswerPage extends React.Component {
     render() {
         return (
             <div>
+                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleAnswerDialogClose={this.handleAnswerDialogClose} /> }
                 <Divider orientation="vertical" />
                 <Hidden smUp>
                     {this.getDrawerContent()}
