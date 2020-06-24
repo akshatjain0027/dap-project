@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ReactModal from "react-modal";
 import FormInput from "../form-input/form-input.component";
-import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, makeStyles } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, Avatar, Menu, MenuItem } from "@material-ui/core";
+import LoginDialog from "../LoginDialog/LoginDialog";
 
 const CustTabs = withStyles(() => ({
   root: {
@@ -52,12 +53,12 @@ const styles = theme => ({
   mainBox: {
     display: "flex",
     flexDirection: "row",
-    alignItems:"center",
+    alignItems: "center",
     width: "100%"
   },
   title: {
     color: "white",
-    "&:hover" : {
+    "&:hover": {
       textDecoration: "none",
       color: "white"
     },
@@ -68,30 +69,22 @@ const styles = theme => ({
     }
   },
   sideBox: {
-    display: "flex", 
-    flexDirection: "row", 
-    justifyContent: "flex-end", 
-    width: "60%", 
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: "60%",
     alignItems: "center"
   },
   askQuestion: {
-    padding: "20px", 
+    padding: "20px",
     fontSize: "1.3rem",
-    cursor: "pointer"    
+    cursor: "pointer"
   },
   signIn: {
-    padding: "20px", 
-    fontSize: "1.3rem", 
+    padding: "20px",
+    fontSize: "1.3rem",
     color: "white",
-    "&:hover": {
-      color: "white",
-      textDecoration: "none",
-    },
-    "&:focus": {
-      outline: "none",
-      color: "white",
-      textDecoration: "none"
-    }
+    cursor: "pointer"
   },
   Modal: {
     position: "absolute",
@@ -117,7 +110,10 @@ class Header extends React.Component {
     super();
     this.state = {
       question: "",
-      showModal: false
+      showModal: false,
+      showLoginDialog: false,
+      anchorEl: null,
+      showAvatarMenu: false
     };
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -129,6 +125,38 @@ class Header extends React.Component {
 
   handleCloseModal() {
     this.setState({ showModal: false });
+  }
+
+  handleLoginDialogOpen = () => {
+    this.setState({
+      showLoginDialog: true
+    });
+  }
+
+  handleLoginDialogClose = () => {
+    this.setState({
+      showLoginDialog: false
+    });
+  }
+
+  handleAvatarMenuOpen = event => {
+    console.log(event.currentTarget)
+    this.setState({
+      anchorEl: event.currentTarget,
+      showAvatarMenu: true
+    })
+  }
+
+  handleAvatarMenuClose = (event) => {
+    this.setState({
+      showAvatarMenu: false,
+      anchorEl: null
+    })
+  }
+
+  handleLogOut = () => {
+    localStorage.clear();
+    window.location.reload();
   }
 
   handleChange = event => {
@@ -145,6 +173,40 @@ class Header extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const avatarMenu = () => (
+      <div>
+        <div onClick={this.handleAvatarMenuOpen}>
+          <Avatar src={localStorage.getItem("userAvatar")} />
+        </div>
+        <Menu
+          id="menu-appbar"
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={this.state.showAvatarMenu}
+          onClose={this.handleAvatarMenuClose}
+          style={{ top: "40px" }}
+        >
+          <MenuItem
+            onClick={() => {
+              window.location.href = window.location.href + `profile/${localStorage.getItem("userId")}`
+              this.handleAvatarMenuClose();
+            }}>
+            My Profile
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this.handleLogOut();
+              this.handleAvatarMenuClose();
+            }}
+          >
+            LogOut
+            </MenuItem>
+        </Menu>
+      </div>
+    )
     const questionModal =
       <ReactModal
         isOpen={this.state.showModal}
@@ -187,6 +249,8 @@ class Header extends React.Component {
         </form>
       </ReactModal>
 
+    const loginDialog = <LoginDialog handleOpen={this.state.showLoginDialog} handleClose={this.handleLoginDialogClose} />
+
     return (
       <AppBar>
         <Toolbar>
@@ -207,13 +271,18 @@ class Header extends React.Component {
               <Typography variant="h5" onClick={this.handleOpenModal} className={classes.askQuestion}>
                 Ask Question
               </Typography>
-              <Typography variant="h5" component={Link} to="/login" className={classes.signIn}>
-                SignIn
-              </Typography>
+              {
+                localStorage.getItem("isAuthenticated") ?
+                  avatarMenu()
+                  :
+                  <Typography variant="button" onClick={this.handleLoginDialogOpen} className={classes.signIn}>
+                    Log In
+                </Typography>}
             </Box>
           </Box>
         </Toolbar>
         {questionModal}
+        {this.state.showLoginDialog && loginDialog}
       </AppBar>
     );
   }

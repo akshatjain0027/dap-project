@@ -1,7 +1,6 @@
 import React from "react";
 import Reflux from "reflux";
-import { Drawer, Typography, withStyles, Hidden, AppBar, Toolbar, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, ListSubheader, TextField, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
-import candidates from "../candidates.png";
+import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField } from "@material-ui/core";
 import AnswerFormDialog from "../../components/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
 
@@ -23,7 +22,7 @@ class AnswerPage extends Reflux.Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         Actions.initStore();
     }
 
@@ -55,7 +54,7 @@ class AnswerPage extends Reflux.Component {
 
     getDrawerContent = () => {
         const { answers, selectedListIndex } = this.state;
-        return(
+        return (
             <CustomDrawer elevation={15} variant="permanent">
                 <Typography variant="h4" style={{ textAlign: "center", padding: "1.3rem" }}>
                     Answers by various authors
@@ -63,9 +62,9 @@ class AnswerPage extends Reflux.Component {
                 <Divider />
                 <List>
                     {answers.map((answer, index) => {
-                        return(
+                        return (
                             <div key={index}>
-                                <ListItem button selected={selectedListIndex === index} onClick={(event)=> this.handleAuthorListItemClick(event, index)}>
+                                <ListItem button selected={selectedListIndex === index} onClick={(event) => this.handleAuthorListItemClick(event, index)}>
                                     <ListItemAvatar>
                                         <Avatar src="https://krourke.org/img/md_avatar.svg" />
                                     </ListItemAvatar>
@@ -81,7 +80,7 @@ class AnswerPage extends Reflux.Component {
                             </div>
                         )
                     })}
-                    
+
                 </List>
             </CustomDrawer>
         )
@@ -91,53 +90,53 @@ class AnswerPage extends Reflux.Component {
         const { question, questionAuthor } = this.state;
         return (
             <Paper elevation={5} style={{ margin: "0% 5%", padding: "2%" }}>
-                <div style={{ display: "flex", flexDirection: "column"}}>
-                    <div style={{ display: "flex", flexDirection: "row"}}>
-                        <Avatar src="https://krourke.org/img/md_avatar.svg" style={{ width: "20px", height: "20px" }}/>
-                        <Typography variant="h5" style={{ padding: "0 1%"}}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                        <Avatar src="https://krourke.org/img/md_avatar.svg" style={{ width: "20px", height: "20px" }} />
+                        <Typography variant="h5" style={{ padding: "0 1%" }}>
                             {questionAuthor.name}
                         </Typography>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                         <div style={{ width: "70%", paddingTop: "1.3rem" }}>
                             <Typography variant="h3">
                                 {question}
                             </Typography>
                         </div>
-                        
+
                         <Button variant="contained" color="primary" style={{ fontSize: "1rem" }} onClick={this.handleAnswerDialogOpen}>
                             Answer
                         </Button>
                     </div>
-                </div>    
+                </div>
             </Paper>
         )
     }
 
     getAnswerCard = () => {
         const { answer } = this.state;
-        const { author } = answer;
-        return answer === undefined || answer === {} ? null: (
+        const { author, images } = answer;
+        return answer === undefined || answer === {} ? null : (
             <Card elevation={5} style={{ margin: "2% 6%", padding: "2%" }}>
-                <CardHeader 
+                <CardHeader
                     avatar={
-                        <Avatar src="https://krourke.org/img/md_avatar.svg"/>
+                        <Avatar src="https://krourke.org/img/md_avatar.svg" />
                     }
                     title={
                         <Typography variant="h5">
-                            {author? author.name: null}
+                            {author ? author.name : null}
                         </Typography>
                     }
                 />
-                <Divider/>
+                <Divider style={{ marginBottom: "2%" }} />
                 <CardMedia
-                    image={candidates}
-                    style={{ paddingTop: "50%"}}
+                    image={images ? images[0] : null}
+                    style={{ paddingTop: "50%", paddingBottom: "2%" }}
                 />
                 <CardContent>
                     {answer.answer}
                 </CardContent>
-                <Divider/>
+                <Divider />
                 <CardActions disableSpacing>
                     <Button style={{ fontSize: "1.2rem" }}>
                         UpVote
@@ -152,33 +151,33 @@ class AnswerPage extends Reflux.Component {
 
     getCommentCard = () => {
         const { comments } = this.state;
-        return(
+        return (
             <Card elevation={5} style={{ margin: "2% 6%" }}>
                 <CardContent>
                     <List subheader={
-                        <Typography variant="h5" style={{ padding: "8px 16px"}}>
+                        <Typography variant="h5" style={{ padding: "8px 16px" }}>
                             Comments
                         </Typography>
-                    }>  
-                    <Divider/>
-                    <div style={{ display: "flex", flexDirection: "row" }}>
-                        <ListItem style={{ width: "50%" }}>
-                            <TextField
-                                variant="outlined"
-                                label="Your Comment"
-                                placeholder="Write Your comment here..."
-                                style={{ width: "100%"}}
-                                size="medium"
-                            />
-                        </ListItem>
-                        <Button variant="contained" color="primary" style={{ width: "10%", margin: "1.5%"}}>
-                            Post
+                    }>
+                        <Divider />
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                            <ListItem style={{ width: "50%" }}>
+                                <TextField
+                                    variant="outlined"
+                                    label="Your Comment"
+                                    placeholder="Write Your comment here..."
+                                    style={{ width: "100%" }}
+                                    size="medium"
+                                />
+                            </ListItem>
+                            <Button variant="contained" color="primary" style={{ width: "10%", margin: "1.5%" }}>
+                                Post
                         </Button>
-                    </div>
-                    <Divider/>
+                        </div>
+                        <Divider />
                         {
-                            comments.map((comment,index) => {
-                                return(
+                            comments.map((comment, index) => {
+                                return (
                                     <div key={index}>
                                         <ListItem>
                                             <ListItemAvatar>
@@ -198,11 +197,11 @@ class AnswerPage extends Reflux.Component {
                                             />
                                         </ListItem>
                                         <Divider />
-                                    </div>                                    
+                                    </div>
                                 )
                             })
                         }
-                        
+
                     </List>
                 </CardContent>
             </Card>
@@ -212,7 +211,7 @@ class AnswerPage extends Reflux.Component {
     render() {
         return (
             <div>
-                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleAnswerDialogClose={this.handleAnswerDialogClose} /> }
+                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleAnswerDialogClose={this.handleAnswerDialogClose} />}
                 <Divider orientation="vertical" />
                 <Hidden smUp>
                     {this.getDrawerContent()}
@@ -228,7 +227,7 @@ class AnswerPage extends Reflux.Component {
                         {this.getAnswerCard()}
                     </div>
                     <div>
-                        {this.state.commentBoxOpen? this.getCommentCard() :null}
+                        {this.state.commentBoxOpen ? this.getCommentCard() : null}
                     </div>
                 </div>
             </div>

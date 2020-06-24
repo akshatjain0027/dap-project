@@ -22,25 +22,26 @@ class Homepage extends Reflux.Component {
   getPost = () => {
     const { questionAnswers } = this.state;
     return (
-      questionAnswers.map(post => {
-        return (
-          <Card elevation={8} style={{ marginBottom: "15px" }} id={post.id} key={post.id}>
-            <CardContent>
-              <Typography variant="h6" style={{ padding: "5px 20px" }}>
-                <img src={user} style={{ width: "20px", paddingRight: "2px" }} alt="" />
-                Akshat Jain
-              </Typography>
-              <Typography variant="h3" style={{ padding: "10px 20px" }}>
-                {post.question}
-              </Typography>
-              <Typography variant="body1" style={{ padding: "10px 20px" }}>
-                {post.answer}
-              </Typography>
-              <img src={candidates} style={{ width: "100%", height: "250px" }} />
-            </CardContent>
-          </Card>
-        )
-      })
+      // questionAnswers.map(post => {
+      //   return (
+      //     <Card elevation={8} style={{ marginBottom: "15px" }} id={post.id} key={post.id}>
+      //       <CardContent>
+      //         <Typography variant="h6" style={{ padding: "5px 20px" }}>
+      //           <img src={user} style={{ width: "20px", paddingRight: "2px" }} alt="" />
+      //           Akshat Jain
+      //         </Typography>
+      //         <Typography variant="h3" style={{ padding: "10px 20px" }}>
+      //           {post.question}
+      //         </Typography>
+      //         <Typography variant="body1" style={{ padding: "10px 20px" }}>
+      //           {post.answer}
+      //         </Typography>
+      //         <img src={candidates} style={{ width: "100%", height: "250px" }} />
+      //       </CardContent>
+      //     </Card>
+      //   )
+      // })
+      null
     )
   }
 
