@@ -23,7 +23,7 @@ class HomepageStore extends Reflux.Store {
     fetchQuestionAnswers = () => {
         this.ApiService.getQuestionAnswers().then(data => {
             this.setState({
-                questionAnswers: data.data,
+                questionAnswers: data,
                 loading: false
             })
         })

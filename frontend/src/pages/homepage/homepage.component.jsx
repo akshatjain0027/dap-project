@@ -3,9 +3,7 @@ import Reflux from "reflux";
 import "./homepage.styles.css";
 import Year from "../../components/year/year.component";
 import Loader from 'react-loader-spinner';
-import { Card, CardContent, Typography, List, ListItem, ListItemText } from "@material-ui/core";
-import user from "../user.png";
-import candidates from "../candidates.png";
+import { Card, CardContent, Typography, Avatar } from "@material-ui/core";
 import HomepageStore, { Actions } from "./homepageStore";
 
 
@@ -22,26 +20,27 @@ class Homepage extends Reflux.Component {
   getPost = () => {
     const { questionAnswers } = this.state;
     return (
-      // questionAnswers.map(post => {
-      //   return (
-      //     <Card elevation={8} style={{ marginBottom: "15px" }} id={post.id} key={post.id}>
-      //       <CardContent>
-      //         <Typography variant="h6" style={{ padding: "5px 20px" }}>
-      //           <img src={user} style={{ width: "20px", paddingRight: "2px" }} alt="" />
-      //           Akshat Jain
-      //         </Typography>
-      //         <Typography variant="h3" style={{ padding: "10px 20px" }}>
-      //           {post.question}
-      //         </Typography>
-      //         <Typography variant="body1" style={{ padding: "10px 20px" }}>
-      //           {post.answer}
-      //         </Typography>
-      //         <img src={candidates} style={{ width: "100%", height: "250px" }} />
-      //       </CardContent>
-      //     </Card>
-      //   )
-      // })
-      null
+      questionAnswers.map(post => {
+        return (
+          <Card elevation={8} style={{ marginBottom: "15px" }} id={post._id} key={post._id}>
+            <CardContent>
+              <div style={{ display: "flex", flexDirection: "row", padding: "0 20px"}}>
+                <Avatar src={post.author.avatar} style={{ padding: "10px 10px 10px 0px"}}/>
+                <Typography variant="subtitle1" style={{ paddingTop: "12px" }}>
+                  {post.author.name}
+                </Typography>
+              </div>             
+              <Typography variant="h3" style={{ padding: "0 20px" }}>
+                {post.question}
+              </Typography>
+              <Typography variant="body1" style={{ padding: "10px 20px" }}>
+                {post.answerId[0].answer}
+              </Typography>
+              <img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} />
+            </CardContent>
+          </Card>
+        )
+      })
     )
   }
 
