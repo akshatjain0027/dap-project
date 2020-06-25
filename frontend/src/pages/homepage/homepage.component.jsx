@@ -3,7 +3,7 @@ import Reflux from "reflux";
 import "./homepage.styles.css";
 import Year from "../../components/year/year.component";
 import Loader from 'react-loader-spinner';
-import { Card, CardContent, Typography, Avatar } from "@material-ui/core";
+import { Card, CardContent, Typography, Avatar, Link } from "@material-ui/core";
 import HomepageStore, { Actions } from "./homepageStore";
 
 
@@ -29,10 +29,12 @@ class Homepage extends Reflux.Component {
                 <Typography variant="subtitle1" style={{ paddingTop: "12px" }}>
                   {post.author.name}
                 </Typography>
+              </div>
+              <div style={{ padding: "0 20px", cursor: "pointer" }}>
+                <Typography variant="h3" component={Link} href={`/question/${post._id}`}>
+                  {post.question}
+                </Typography>
               </div>             
-              <Typography variant="h3" style={{ padding: "0 20px" }}>
-                {post.question}
-              </Typography>
               <Typography variant="body1" style={{ padding: "10px 20px" }}>
                 {post.answerId[0].answer}
               </Typography>

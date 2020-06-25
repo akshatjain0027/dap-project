@@ -13,7 +13,7 @@ class AnswerStore extends Reflux.Store{
         super(props);
         this.state = {
             answers: [],
-            questionId: "5edf3cd391d1101c37f4edf9",
+            questionId: "",
             question: "",
             questionAuthor: {},
             selectedListIndex: 0,
@@ -25,11 +25,14 @@ class AnswerStore extends Reflux.Store{
     }
 
     onInitStore (){
-        this.fetchAnswers();
+        this.setState({
+            questionId: window.location.pathname.split("/")[2]
+        })
+        this.fetchAnswers(this.state.questionId);
     }
 
-    fetchAnswers() {
-        this.APIService.getAnswers(this.state.questionId)
+    fetchAnswers(id) {
+        this.APIService.getAnswers(id)
             .then(data =>{
                 this.setState({
                     answers: data.answerId,
