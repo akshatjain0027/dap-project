@@ -24,6 +24,15 @@ const styles = theme => ({
     logInButtons: {
         width: "100%",
         fontSize: "medium"
+    },
+    tabs: {
+        padding: "16px 24px"
+    },
+    tabName: {
+        fontSize: "15px"
+    },
+    tabContainer: {
+        padding: "20px"
     }
 })
 
@@ -65,6 +74,7 @@ class LoginDialog extends Reflux.Component {
     }
 
     getSignInComponent = () => {
+        const { signInEmail, signInPassword } = this.state;
         const { classes } = this.props;
         return (
             <div className={classes.logInContainer}>
@@ -73,7 +83,7 @@ class LoginDialog extends Reflux.Component {
                         label="Email"
                         placeholder="Enter Your Registered EmailId.."
                         variant="outlined"
-                        value={this.state.signInEmail}
+                        value={signInEmail}
                         name="signInEmail"
                         onChange={this.handleInputChange}
                         required
@@ -86,7 +96,7 @@ class LoginDialog extends Reflux.Component {
                         placeholder="Enter Your password"
                         type="password"
                         variant="outlined"
-                        value={this.state.signInPassword}
+                        value={signInPassword}
                         name="signInPassword"
                         onChange={this.handleInputChange}
                         required
@@ -94,7 +104,13 @@ class LoginDialog extends Reflux.Component {
                     />
                 </div>
                 <div className={classes.logInInputs}>
-                    <Button variant="contained" color="primary" className={classes.logInButtons} onClick={this.handleSignInClick}>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        className={classes.logInButtons} 
+                        onClick={this.handleSignInClick} 
+                        disabled={signInEmail === "" || signInPassword===""} 
+                    >
                         Sign In
                     </Button>
                 </div>
@@ -159,7 +175,13 @@ class LoginDialog extends Reflux.Component {
                     />
                 </div>
                 <div className={classes.logInInputs}>
-                    <Button variant="contained" color="primary" className={classes.logInButtons} onClick={this.handleSignUpClick}>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        className={classes.logInButtons} 
+                        onClick={this.handleSignUpClick}
+                        disabled={signUpEmail === "" || signUpName === "" || signUpPassword === "" || confirmPassword === ""}
+                    >
                         Sign Up
                     </Button>
                 </div>
@@ -169,14 +191,14 @@ class LoginDialog extends Reflux.Component {
     }
 
     render() {
-        const { handleOpen, handleClose } = this.props
+        const { handleOpen, handleClose, classes } = this.props
         return (
             <div>
                 <CustDialog open={handleOpen} onClose={handleClose}>
-                    <div style={{ padding: "16px 24px" }}>
+                    <div className={classes.tabs}>
                         <Tabs value={this.state.selectedIndex} centered onChange={this.handleChange}>
-                            <Tab label="Sign In" style={{ fontSize: "15px" }} />
-                            <Tab label="Sign Up" style={{ fontSize: "15px" }} />
+                            <Tab label="Sign In" className={classes.tabName} />
+                            <Tab label="Sign Up" className={classes.tabName} />
                         </Tabs>
                     </div>
                     <SwipeableViews
@@ -184,10 +206,10 @@ class LoginDialog extends Reflux.Component {
                         index={this.state.selectedIndex}
                         onChangeIndex={this.handleChangeIndex}
                     >
-                        <div hidden={this.state.selectedIndex !== 0} style={{ padding: "20px" }}>
+                        <div hidden={this.state.selectedIndex !== 0} className={classes.tabContainer}>
                             {this.getSignInComponent()}
                         </div>
-                        <div hidden={this.state.selectedIndex !== 1} style={{ padding: "20px" }}>
+                        <div hidden={this.state.selectedIndex !== 1} className={classes.tabContainer}>
                             {this.getSignUpComponent()}
                         </div>
                     </SwipeableViews>

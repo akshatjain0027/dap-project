@@ -176,7 +176,7 @@ class Header extends React.Component {
     const avatarMenu = () => (
       <div>
         <div onClick={this.handleAvatarMenuOpen}>
-          <Avatar src={localStorage.getItem("userAvatar")} />
+          <Avatar src={localStorage.getItem("userAvatar")} style={{ cursor: "pointer" }}/>
         </div>
         <Menu
           id="menu-appbar"
