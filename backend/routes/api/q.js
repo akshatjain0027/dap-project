@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require('passport');
 
 //Load  model
 const User = require('../../models/user');
@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 
 
   /**
- * GET question OF A  particular QUESTION ID
+ * GET question
  */
 router.get("/:id", async (req, res) => {
     const question = await Question.findById(req.params.id);
@@ -50,23 +50,20 @@ router.get("/:id", async (req, res) => {
     res.json(question);
   });
 
-// /**
-
-//   /**
-//  * POST NEW QUESTION
-//  */
-// router.post("/api/q", async (req, res) => {
-//     try {
-//       console.log(req.body);
-//       const question = new Question({
-//         ...req.body,
-//         //author: req.user._id,
-//       });
-//       console.log(await question.save());
-//       res.status(201).send(question);
-//     } catch (e) {
-//       res.status(400).send(e);
-//     }
-//   }); 
-
+/**
+ * POST NEW QUESTION
+ */
+router.post("/",passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    
+    const question = new Question({
+      ...req.body,
+      author: req.user._id,
+    });
+    await question.save();
+    res.status(201).send(question);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+}); 
 module.exports = router;
