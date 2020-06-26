@@ -9,7 +9,6 @@ class HomepageStore extends Reflux.Store {
     constructor(){
         super();
         this.state = {
-            questionAnswers : [],
             loading: true
         }
         this.ApiService = new APIService();
@@ -24,6 +23,8 @@ class HomepageStore extends Reflux.Store {
         this.ApiService.getQuestionAnswers().then(data => {
             this.setState({
                 questionAnswers: data,
+            })
+            this.setState({
                 loading: false
             })
         })

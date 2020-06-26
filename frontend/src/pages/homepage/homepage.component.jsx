@@ -20,6 +20,7 @@ class Homepage extends Reflux.Component {
   getPost = () => {
     const { questionAnswers } = this.state;
     return (
+      questionAnswers ? 
       questionAnswers.map(post => {
         return (
           <Card elevation={8} style={{ marginBottom: "15px" }} id={post._id} key={post._id}>
@@ -36,13 +37,13 @@ class Homepage extends Reflux.Component {
                 </Typography>
               </div>             
               <Typography variant="body1" style={{ padding: "10px 20px" }}>
-                {post.answerId[0].answer}
+                {post.answerId.length !== 0 ? post.answerId[0].answer: "Not answered yet."}
               </Typography>
-              <img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} />
+              {post.answerId.length !== 0 && post.answerId[0].images?<img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} /> : null}
             </CardContent>
           </Card>
         )
-      })
+      }): null
     )
   }
 
