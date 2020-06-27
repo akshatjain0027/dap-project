@@ -29,4 +29,9 @@ export class APIService {
         setAuthToken(localStorage.getItem("jwtToken"))
         return axios.post(`${this.API_SERVER_BASE_URL}/api/q`, data).then(response => response)
     }
+
+    postAnswer(id, data) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/a/${id}`, data).then(response => response)
+    }
 }

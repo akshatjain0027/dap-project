@@ -1,7 +1,7 @@
 import React from "react";
 import Reflux from "reflux";
 import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField } from "@material-ui/core";
-import AnswerFormDialog from "../../components/answerFormDialog";
+import AnswerFormDialog from "../../components/AnswerDialog/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
 
 const CustomDrawer = withStyles(theme => ({
@@ -211,7 +211,7 @@ class AnswerPage extends Reflux.Component {
     render() {
         return (
             <div>
-                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleAnswerDialogClose={this.handleAnswerDialogClose} />}
+                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId}/>}
                 <Divider orientation="vertical" />
                 <Hidden smUp>
                     {this.getDrawerContent()}
