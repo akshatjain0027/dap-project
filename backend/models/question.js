@@ -11,11 +11,6 @@ var QuestionSchema = new Schema(
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
-    tag: [
-      {
-        type: String,
-      },
-    ],
     answerId: [
       {
         type: mongoose.Schema.ObjectId,
