@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ReactModal from "react-modal";
-import FormInput from "../form-input/form-input.component";
 import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, Avatar, Menu, MenuItem } from "@material-ui/core";
 import LoginDialog from "../LoginDialog/LoginDialog";
+import QuestionDialog from "../QuestionDialog/questionDialog";
 
 const CustTabs = withStyles(() => ({
   root: {
@@ -165,12 +164,6 @@ class Header extends React.Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = async event => {
-    event.preventDefault();
-    const { question } = this.state;
-  };
-
-
   render() {
     const { classes } = this.props;
     const avatarMenu = () => (
@@ -207,49 +200,8 @@ class Header extends React.Component {
         </Menu>
       </div>
     )
-    const questionModal =
-      <ReactModal
-        isOpen={this.state.showModal}
-        contentLabel="ask question modal"
-        className={classes.Modal}
-      >
-        <h1>Ask Your Question Here!</h1>
-        <form action="" onSubmit={this.handleSubmit}>
-          <FormInput
-            label="Question?"
-            type="text"
-            name="question"
-            value={this.state.question}
-            handleChange={this.handleChange}
-          />
-          <FormInput
-            label="Tags(Optional)"
-            type="text"
-            name="question"
-            value={this.state.question}
-            handleChange={this.handleChange}
-          />
-          <Button
-            className={classes.modalButton}
-            variant="contained"
-            color="primary"
-            type="submit"
-            onClick={this.handleCloseModal}
-          >
-            Ask
-          </Button>
-          <Button
-            className={classes.modalButton}
-            variant="contained"
-            color="secondary"
-            onClick={this.handleCloseModal}
-          >
-            Cancel
-          </Button>
-        </form>
-      </ReactModal>
-
-    const loginDialog = <LoginDialog handleOpen={this.state.showLoginDialog} handleClose={this.handleLoginDialogClose} />
+    const questionModal = <QuestionDialog handleOpen={this.state.showModal} handleClose={this.handleCloseModal}/>;
+    const loginDialog = <LoginDialog handleOpen={this.state.showLoginDialog} handleClose={this.handleLoginDialogClose} />;
 
     return (
       <AppBar>
@@ -277,11 +229,12 @@ class Header extends React.Component {
                   :
                   <Typography variant="button" onClick={this.handleLoginDialogOpen} className={classes.signIn}>
                     Log In
-                </Typography>}
+                </Typography>
+              }
             </Box>
           </Box>
         </Toolbar>
-        {questionModal}
+        {this.state.showModal && questionModal}
         {this.state.showLoginDialog && loginDialog}
       </AppBar>
     );
