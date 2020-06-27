@@ -40,22 +40,14 @@ class LoginDialog extends Reflux.Component {
     constructor(props) {
         super(props);
         this.store = LoginStore;
-        this.state = {
-            selectedIndex: 0
-        }
     }
 
     handleChange = (event, newValue) => {
-        this.setState({
-            selectedIndex: newValue
-        })
-        console.log(this.state)
+        Actions.indexChange(newValue)
     }
 
     handleChangeIndex = (index) => {
-        this.setState({
-            selectedIndex: index
-        })
+        Actions.indexChange(index)
     }
 
     handleInputChange = event => {

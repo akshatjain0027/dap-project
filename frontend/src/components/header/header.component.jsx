@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, Avatar, Menu, MenuItem } from "@material-ui/core";
 import LoginDialog from "../LoginDialog/LoginDialog";
 import QuestionDialog from "../QuestionDialog/questionDialog";
+import { LoginMessageDialog } from "../LoginMessageDialog/LoginMessageDialog";
 
 const CustTabs = withStyles(() => ({
   root: {
@@ -84,23 +85,6 @@ const styles = theme => ({
     fontSize: "1.3rem",
     color: "white",
     cursor: "pointer"
-  },
-  Modal: {
-    position: "absolute",
-    top: "100px",
-    left: "30%",
-    right: "30%",
-    bottom: "150px",
-    border: "2px solid rgb(137, 137, 233)",
-    backgroundColor: "#fff",
-    overflow: "auto",
-    outline: "none",
-    padding: "50px",
-    borderRadius: "4px"
-  },
-  modalButton: {
-    margin: "1%",
-    fontSize: "1.2rem"
   }
 });
 
@@ -111,18 +95,17 @@ class Header extends React.Component {
       question: "",
       showModal: false,
       showLoginDialog: false,
+      showLoginMessageDialog: false,
       anchorEl: null,
       showAvatarMenu: false
     };
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
   }
 
-  handleOpenModal() {
+  handleOpenModal = () => {
     this.setState({ showModal: true });
   }
 
-  handleCloseModal() {
+  handleCloseModal = () => {
     this.setState({ showModal: false });
   }
 
@@ -135,6 +118,18 @@ class Header extends React.Component {
   handleLoginDialogClose = () => {
     this.setState({
       showLoginDialog: false
+    });
+  }
+
+  handleLoginMessageDialogOpen = () => {
+    this.setState({
+      showLoginMessageDialog: true
+    });
+  }
+
+  handleLoginMessageDialogClose = () => {
+    this.setState({
+      showLoginMessageDialog: false
     });
   }
 
@@ -156,6 +151,15 @@ class Header extends React.Component {
   handleLogOut = () => {
     localStorage.clear();
     window.location.reload();
+  }
+
+  handleAskQuestionClick = () => {
+    if(localStorage.getItem("isAuthenticated")){
+      this.handleOpenModal();
+    }
+    else{
+      this.handleLoginMessageDialogOpen();
+    }
   }
 
   handleChange = event => {
@@ -202,7 +206,7 @@ class Header extends React.Component {
     )
     const questionModal = <QuestionDialog handleOpen={this.state.showModal} handleClose={this.handleCloseModal}/>;
     const loginDialog = <LoginDialog handleOpen={this.state.showLoginDialog} handleClose={this.handleLoginDialogClose} />;
-
+    const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose}/>;
     return (
       <AppBar>
         <Toolbar>
@@ -220,7 +224,7 @@ class Header extends React.Component {
               </CustTabs>
             </Box>
             <Box className={classes.sideBox}>
-              <Typography variant="h5" onClick={this.handleOpenModal} className={classes.askQuestion}>
+              <Typography variant="h5" onClick={this.handleAskQuestionClick} className={classes.askQuestion}>
                 Ask Question
               </Typography>
               {
@@ -236,6 +240,7 @@ class Header extends React.Component {
         </Toolbar>
         {this.state.showModal && questionModal}
         {this.state.showLoginDialog && loginDialog}
+        {this.state.showLoginMessageDialog && loginMessageDialog}
       </AppBar>
     );
   }

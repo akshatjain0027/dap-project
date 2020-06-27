@@ -1,8 +1,9 @@
 import React from "react";
 import Reflux from "reflux";
-import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField } from "@material-ui/core";
+import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress } from "@material-ui/core";
 import AnswerFormDialog from "../../components/AnswerDialog/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
+import { LoginMessageDialog } from "../../components/LoginMessageDialog/LoginMessageDialog";
 
 const CustomDrawer = withStyles(theme => ({
     paperAnchorDockedLeft: {
@@ -19,6 +20,7 @@ class AnswerPage extends Reflux.Component {
         this.state = {
             commentBoxOpen: false,
             answerDialogOpen: false,
+            showLoginMessageDialog: false
         }
     }
 
@@ -43,6 +45,27 @@ class AnswerPage extends Reflux.Component {
         this.setState({
             answerDialogOpen: true
         })
+    }
+
+    handleLoginMessageDialogOpen = () => {
+        this.setState({
+            showLoginMessageDialog: true
+        });
+    }
+
+    handleLoginMessageDialogClose = () => {
+        this.setState({
+            showLoginMessageDialog: false
+        });
+    }
+
+    handleAnswerButtonClick = () => {
+        if(localStorage.getItem("isAuthenticated")){
+            this.handleAnswerDialogOpen();
+        }
+        else{
+            this.handleLoginMessageDialogOpen();
+        }
     }
 
     handleAuthorListItemClick = (event, index) => {
@@ -104,7 +127,7 @@ class AnswerPage extends Reflux.Component {
                             </Typography>
                         </div>
 
-                        <Button variant="contained" color="primary" style={{ fontSize: "1rem" }} onClick={this.handleAnswerDialogOpen}>
+                        <Button variant="contained" color="primary" style={{ fontSize: "1rem" }} onClick={this.handleAnswerButtonClick}>
                             Answer
                         </Button>
                     </div>
@@ -209,9 +232,12 @@ class AnswerPage extends Reflux.Component {
     }
 
     render() {
-        return (
+        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId}/>
+        const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose}/>
+        return this.state.loading? <div><CircularProgress style={{ margin: "25% 50%"}} size={100} thickness={2.5}/></div> : (
             <div>
-                {this.state.answerDialogOpen && <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId}/>}
+                {this.state.answerDialogOpen && answerDialog}
+                {this.state.showLoginMessageDialog && loginMessageDialog}
                 <Divider orientation="vertical" />
                 <Hidden smUp>
                     {this.getDrawerContent()}

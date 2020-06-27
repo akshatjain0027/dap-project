@@ -1,6 +1,5 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import ReactModal from "react-modal";
 
 import Header from "./components/header/header.component";
 import Homepage from "./pages/homepage/homepage.component";
@@ -14,8 +13,6 @@ import history from "./utils/history";
 
 import "./App.css";
 import AnswerPage from "./pages/answersPage/answerPage";
-
-ReactModal.setAppElement("#root");
 
 class App extends React.Component {
   constructor() {

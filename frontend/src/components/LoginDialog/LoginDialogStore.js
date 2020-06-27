@@ -1,12 +1,13 @@
 import Reflux from 'reflux';
 import jwt_decode from 'jwt-decode';
 import { APIService } from '../../services/APIService';
-import setAuthToken from '../../utils/setAuthToken';
+import { StorageHelper } from '../../utils/StorageHelper';
 
 export const Actions = Reflux.createActions([
     "inputChange",
+    "indexChange",
     "signInClick",
-    "signUpClick"
+    "signUpClick",
 ]);
 
 class LoginStore extends Reflux.Store {
@@ -18,17 +19,24 @@ class LoginStore extends Reflux.Store {
             signUpName: "",
             signUpEmail: "",
             signUpPassword: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            selectedIndex: 0
         }
         this.listenables = Actions;
         this.APIService = new APIService();
+        this.StorageHelper = new StorageHelper();
     }
 
     onInputChange(name, value) {
         this.setState({
             [name]: value
         })
-        console.log(this.state)
+    }
+
+    onIndexChange(index){
+        this.setState({
+            selectedIndex: index
+        })
     }
 
     onSignInClick() {
@@ -42,14 +50,8 @@ class LoginStore extends Reflux.Store {
                         if (data) {
                             let token = data.token;
                             localStorage.setItem("jwtToken", token)
-                            setAuthToken(token);
                             const currentUser = jwt_decode(token);
-                            localStorage.setItem("userName", currentUser.name)
-                            localStorage.setItem("userId", currentUser.id)
-                            localStorage.setItem("userAvatar", currentUser.avatar)
-                            localStorage.setItem("userEmail", this.state.signInEmail)
-                            localStorage.setItem("isAuthenticated", true)
-
+                            this.StorageHelper.setLoginUserData(currentUser);
                             this.setState({
                                 signInEmail: "",
                                 signInPassword: ""
@@ -89,12 +91,7 @@ class LoginStore extends Reflux.Store {
                 }
                 this.APIService.register(user)
                     .then(data => {
-                        localStorage.setItem("isAuthenticated", true)
-                        localStorage.setItem("userName", data.name)
-                        localStorage.setItem("userId", data._id)
-                        localStorage.setItem("userAvatar", data.avatar)
-                        localStorage.setItem("userEmail", signUpEmail)
-
+                        this.StorageHelper.setRegisterUserData(data)
                         this.setState({
                             signUpName: "",
                             signUpEmail: "",

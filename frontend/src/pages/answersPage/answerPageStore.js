@@ -1,5 +1,4 @@
 import Reflux from 'reflux';
-import React from 'react';
 import { APIService } from '../../services/APIService';
 
 export const Actions = Reflux.createActions([
@@ -18,7 +17,8 @@ class AnswerStore extends Reflux.Store{
             questionAuthor: {},
             selectedListIndex: 0,
             answer: {},
-            comments: []
+            comments: [],
+            loading: true
         }
         this.listenables = Actions;
         this.APIService = new APIService();
@@ -39,6 +39,9 @@ class AnswerStore extends Reflux.Store{
                     question: data.question,
                     questionAuthor: data.author,
                     answer: data.answerId[this.state.selectedListIndex]
+                })
+                this.setState({
+                    loading: false
                 })
             })
     }
