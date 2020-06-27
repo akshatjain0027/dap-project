@@ -4,45 +4,45 @@ var Schema = mongoose.Schema;
 
 var AnswerSchema = new Schema(
   {
-    answer: {
+    title: {
       type: String,
     },
-    title: {
+    answer: {
       type: String,
     },
     author: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
-    upVoteCount: {
-      type: Number,
-    },
+    upVote: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        }
+      }
+    ],
+    downVote: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        }
+      }
+    ],
     questionId: {
       type: mongoose.Schema.ObjectId,
       ref: "Question",
     },
-    comments: [
+    commentId: [
       {
-        user: {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-        },
-        text: {
-          type: String,
-          required: true,
-        },
-        name: {
-          type: String,
-        },
-        avatar: {
-          type: String,
-        },
-        date: {
-          type: Date,
-          default: Date.now,
-        },
+        type: mongoose.Schema.ObjectId,
+        ref: "Comment",
       },
     ],
+    image:{
+      type:String
+    }
   },
   {
     timestamps: true,

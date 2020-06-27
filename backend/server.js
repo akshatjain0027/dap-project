@@ -6,6 +6,7 @@ const passport = require("passport");
 const user = require("./routes/api/user");
 const q = require("./routes/api/q"); //Question
 const a = require("./routes/api/a"); //Answer
+const c = require("./routes/api/c"); //Comment
 const notify  = require("./routes/api/notify");  //Telegram
 
 //cors
@@ -39,6 +40,7 @@ require("./config/passport")(passport);
 app.use("/api/user", user);
 app.use("/api/q", q);
 app.use("/api/a", a);
+app.use("/api/c", c);
 app.use("/api/notify", notify);
 
 
