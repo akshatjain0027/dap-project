@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 
 export class APIService {
-    API_SERVER_BASE_URL = "https://backend-json-dap.herokuapp.com";
+    API_SERVER_BASE_URL = "https://whispering-tundra-79405.herokuapp.com";
 
     login(email, password) {
         let user = {
