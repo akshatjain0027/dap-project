@@ -20,6 +20,24 @@ router.get("/", async (req, res) => {
   });
 
 
+/**
+ * GET COMMENTS of particular answer id
+ */
+router.get(
+  "/:id",
+  passport.authenticate('jwt', { session: false }), async (req, res) => {
+    try {
+      const comments = await Comment.find({ answerId: req.params.id })
+        .populate("author")
+        .sort();
+      res.status(201).send(comments);
+    } catch (e) {
+      res.status(400).send(e);
+    }
+  }
+);
+
+
   /**
  * POST Comment  OF A Ans id
  */
