@@ -104,7 +104,7 @@ class AnswerPage extends Reflux.Component {
                             <div key={index}>
                                 <ListItem button selected={selectedListIndex === index} onClick={(event) => this.handleAuthorListItemClick(event, index)}>
                                     <ListItemAvatar>
-                                        <Avatar src="https://krourke.org/img/md_avatar.svg" />
+                                        <Avatar src={answer.author.avatar} />
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={
@@ -130,7 +130,7 @@ class AnswerPage extends Reflux.Component {
             <Paper elevation={5} style={{ margin: "0% 5%", padding: "2%" }}>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "row" }}>
-                        <Avatar src="https://krourke.org/img/md_avatar.svg" style={{ width: "20px", height: "20px" }} />
+                        <Avatar src={questionAuthor.avatar} style={{ width: "20px", height: "20px" }} />
                         <Typography variant="h5" style={{ padding: "0 1%" }}>
                             {questionAuthor.name}
                         </Typography>
@@ -153,43 +153,45 @@ class AnswerPage extends Reflux.Component {
 
     getAnswerCard = () => {
         const { answer } = this.state;
-        const { author, images } = answer;
-        return answer === undefined || answer === {} ? null : (
-            <Card elevation={5} style={{ margin: "2% 6%", padding: "2%" }}>
-                <CardHeader
-                    avatar={
-                        <Avatar src="https://krourke.org/img/md_avatar.svg" />
+        return answer === undefined || answer === {} ?
+            <Typography variant="h4" style={{ textAlign: "center", margin: "20%", color: "gray"}}>No answer found. Be the first one to answer</Typography>
+            :
+            (
+                <Card elevation={5} style={{ margin: "2% 6%", padding: "2%" }}>
+                    <CardHeader
+                        avatar={
+                            <Avatar src={answer.author.avatar} />
+                        }
+                        title={
+                            <Typography variant="h5">
+                                {answer.author ? answer.author.name : null}
+                            </Typography>
+                        }
+                    />
+                    <Divider style={{ marginBottom: "2%" }} />
+                    {
+                        answer.images ?
+                            <CardMedia
+                                image={answer.images[0]}
+                                style={{ paddingTop: "50%", paddingBottom: "2%" }}
+                            /> :
+                            null
                     }
-                    title={
-                        <Typography variant="h5">
-                            {author ? author.name : null}
-                        </Typography>
-                    }
-                />
-                <Divider style={{ marginBottom: "2%" }} />
-                {
-                    images ?
-                        <CardMedia
-                            image={images[0]}
-                            style={{ paddingTop: "50%", paddingBottom: "2%" }}
-                        /> :
-                        null
-                }
 
-                <CardContent>
-                    {answer.answer}
-                </CardContent>
-                <Divider />
-                <CardActions disableSpacing>
-                    <Button style={{ fontSize: "1.2rem" }}>
-                        UpVote
+                    <CardContent>
+                        {answer.answer}
+                    </CardContent>
+                    <Divider />
+                    <CardActions disableSpacing>
+                        <Button style={{ fontSize: "1.2rem" }}>
+                            UpVote
                     </Button>
-                    <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
-                        Comment
+                        <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
+                            Comment
                     </Button>
-                </CardActions>
-            </Card>
-        )
+                    </CardActions>
+                </Card>
+            )
     }
 
     getCommentCard = () => {

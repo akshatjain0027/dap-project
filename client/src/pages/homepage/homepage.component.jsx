@@ -36,10 +36,23 @@ class Homepage extends Reflux.Component {
                   {post.question}
                 </Typography>
               </div>             
-              <Typography variant="body1" style={{ padding: "10px 20px" }}>
-                {post.answerId.length !== 0 ? post.answerId[0].answer: "Not answered yet."}
-              </Typography>
-              {post.answerId.length !== 0 && post.answerId[0].images?<img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} /> : null}
+              {
+                post.answerId.length === 0 ?
+                <Typography variant="h4" style={{ textAlign: "center", color: "gray", margin: "10%"}}>
+                  No answers found. Click the question link and be the first one to answer.
+                </Typography>
+                :
+                <div>
+                  <Typography variant="h5" style={{ padding: "10px 20px" }}>
+                    {post.answerId[0].answer}
+                  </Typography>
+                  {
+                    post.answerId[0].images?
+                    <img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} /> 
+                    : null
+                  }
+                </div>
+              }              
             </CardContent>
           </Card>
         )
