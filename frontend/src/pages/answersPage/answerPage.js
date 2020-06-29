@@ -29,10 +29,15 @@ class AnswerPage extends Reflux.Component {
     }
 
     handleCommentButtonClick = () => {
-        this.setState({
-            commentBoxOpen: !this.state.commentBoxOpen
-        })
-        Actions.showComments();
+        if (localStorage.getItem("isAuthenticated")) {
+            this.setState({
+                commentBoxOpen: !this.state.commentBoxOpen
+            })
+            Actions.showComments();
+        }
+        else {
+            this.handleLoginMessageDialogOpen();
+        }
     }
 
     handleAnswerDialogClose = () => {
@@ -60,19 +65,29 @@ class AnswerPage extends Reflux.Component {
     }
 
     handleAnswerButtonClick = () => {
-        if(localStorage.getItem("isAuthenticated")){
+        if (localStorage.getItem("isAuthenticated")) {
             this.handleAnswerDialogOpen();
         }
-        else{
+        else {
             this.handleLoginMessageDialogOpen();
         }
     }
 
     handleAuthorListItemClick = (event, index) => {
         this.setState({
-            commentBoxOpen: false
+            commentBoxOpen: false,
+            newComment: ""
         })
         Actions.authorListItemClick(index);
+    }
+
+    handleCommentInputChange = event => {
+        const { value, name } = event.target
+        Actions.inputChange(name, value)
+    }
+
+    handlePostComment = () => {
+        Actions.postComment();
     }
 
     getDrawerContent = () => {
@@ -152,10 +167,15 @@ class AnswerPage extends Reflux.Component {
                     }
                 />
                 <Divider style={{ marginBottom: "2%" }} />
-                <CardMedia
-                    image={images ? images[0] : null}
-                    style={{ paddingTop: "50%", paddingBottom: "2%" }}
-                />
+                {
+                    images ?
+                        <CardMedia
+                            image={images[0]}
+                            style={{ paddingTop: "50%", paddingBottom: "2%" }}
+                        /> :
+                        null
+                }
+
                 <CardContent>
                     {answer.answer}
                 </CardContent>
@@ -173,7 +193,37 @@ class AnswerPage extends Reflux.Component {
     }
 
     getCommentCard = () => {
-        const { comments } = this.state;
+        const { comments, loadingComments, newComment } = this.state;
+        const getComments = (comments) => {
+            return comments.length === 0 ? (
+                <Typography variant="h4" style={{ textAlign: "center", margin: "10%", color: "gray" }}>No comments found. Be the first one to comment.</Typography>
+            ) : (
+                    comments.map((comment, index) => {
+                        return (
+                            <div key={index}>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar src={comment.author.avatar} />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={
+                                            <Typography variant="h6">
+                                                {comment.author.name}
+                                            </Typography>
+                                        }
+                                        secondary={
+                                            <Typography variant="subtitle1">
+                                                {comment.content}
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                                <Divider />
+                            </div>
+                        )
+                    })
+                )
+        }
         return (
             <Card elevation={5} style={{ margin: "2% 6%" }}>
                 <CardContent>
@@ -189,40 +239,26 @@ class AnswerPage extends Reflux.Component {
                                     variant="outlined"
                                     label="Your Comment"
                                     placeholder="Write Your comment here..."
+                                    value={newComment}
+                                    name="newComment"
+                                    onChange={this.handleCommentInputChange}
                                     style={{ width: "100%" }}
                                     size="medium"
                                 />
                             </ListItem>
-                            <Button variant="contained" color="primary" style={{ width: "10%", margin: "1.5%" }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ width: "10%", margin: "1.5%" }}
+                                onClick={this.handlePostComment}
+                                disabled={newComment === ""}
+                            >
                                 Post
-                        </Button>
+                            </Button>
                         </div>
                         <Divider />
                         {
-                            comments.map((comment, index) => {
-                                return (
-                                    <div key={index}>
-                                        <ListItem>
-                                            <ListItemAvatar>
-                                                <Avatar src={comment.avatar} />
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary={
-                                                    <Typography variant="h6">
-                                                        {comment.name}
-                                                    </Typography>
-                                                }
-                                                secondary={
-                                                    <Typography variant="subtitle1">
-                                                        {comment.text}
-                                                    </Typography>
-                                                }
-                                            />
-                                        </ListItem>
-                                        <Divider />
-                                    </div>
-                                )
-                            })
+                            loadingComments ? <CircularProgress style={{ margin: "10% 45%" }} /> : getComments(comments)
                         }
 
                     </List>
@@ -232,9 +268,9 @@ class AnswerPage extends Reflux.Component {
     }
 
     render() {
-        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId}/>
-        const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose}/>
-        return this.state.loading? <div><CircularProgress style={{ margin: "25% 50%"}} size={100} thickness={2.5}/></div> : (
+        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId} />
+        const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose} />
+        return this.state.loading ? <div><CircularProgress style={{ margin: "25% 50%" }} size={100} thickness={2.5} /></div> : (
             <div>
                 {this.state.answerDialogOpen && answerDialog}
                 {this.state.showLoginMessageDialog && loginMessageDialog}

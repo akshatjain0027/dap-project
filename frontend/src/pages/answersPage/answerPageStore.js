@@ -4,11 +4,13 @@ import { APIService } from '../../services/APIService';
 export const Actions = Reflux.createActions([
     "initStore",
     "authorListItemClick",
-    "showComments"
+    "showComments",
+    "postComment",
+    "inputChange"
 ])
 
-class AnswerStore extends Reflux.Store{
-    constructor(props){
+class AnswerStore extends Reflux.Store {
+    constructor(props) {
         super(props);
         this.state = {
             answers: [],
@@ -18,13 +20,15 @@ class AnswerStore extends Reflux.Store{
             selectedListIndex: 0,
             answer: {},
             comments: [],
-            loading: true
+            loading: true,
+            loadingComments: true,
+            newComment: ""
         }
         this.listenables = Actions;
         this.APIService = new APIService();
     }
 
-    onInitStore (){
+    onInitStore() {
         this.setState({
             questionId: window.location.pathname.split("/")[2]
         })
@@ -33,7 +37,7 @@ class AnswerStore extends Reflux.Store{
 
     fetchAnswers(id) {
         this.APIService.getAnswers(id)
-            .then(data =>{
+            .then(data => {
                 this.setState({
                     answers: data.answerId,
                     question: data.question,
@@ -46,17 +50,61 @@ class AnswerStore extends Reflux.Store{
             })
     }
 
-    onAuthorListItemClick (index) {
+    onAuthorListItemClick(index) {
         this.setState({
             selectedListIndex: index,
             answer: this.state.answers[index]
         })
     }
 
-    onShowComments () {
+    onShowComments() {
         this.setState({
-            comments: this.state.answer.comments
+            loadingComments: true
         })
+        this.APIService.getComments(this.state.answer._id)
+            .then(response => {
+                if (response.status === 201) {
+                    this.setState({
+                        comments: response.data
+                    })
+                    this.setState({
+                        loadingComments: false
+                    })
+                }
+                else {
+                    throw new Error();
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    onInputChange(name, value) {
+        this.setState({
+            [name]: value
+        })
+    }
+
+    onPostComment() {
+        const data = {
+            content: this.state.newComment
+        }
+        this.APIService.postComment(this.state.answer._id, data)
+            .then(response => {
+                if (response.status === 201) {
+                    this.onShowComments()
+                    this.setState({
+                        newComment: ""
+                    })
+                }
+                else {
+                    throw new Error();
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 }
 

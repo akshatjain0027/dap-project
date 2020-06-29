@@ -21,8 +21,12 @@ export class APIService {
     }
 
     getAnswers(id) {
-        console.log(id)
         return axios.get(`${this.API_SERVER_BASE_URL}/api/q/${id}`).then(response => response.data)
+    }
+
+    getComments(id) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.get(`${this.API_SERVER_BASE_URL}/api/c/${id}`).then(response => response)
     }
 
     askQuestion(data) {
@@ -33,5 +37,10 @@ export class APIService {
     postAnswer(id, data) {
         setAuthToken(localStorage.getItem("jwtToken"));
         return axios.post(`${this.API_SERVER_BASE_URL}/api/a/${id}`, data).then(response => response)
+    }
+
+    postComment(id, data) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/c/${id}`, data).then(response => response)
     }
 }
