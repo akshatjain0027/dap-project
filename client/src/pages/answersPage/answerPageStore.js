@@ -64,14 +64,14 @@ class AnswerStore extends Reflux.Store {
 
     upvoteCheck(upvotes) {
         const currentUserId = localStorage.getItem('userId');
-        if(upvotes.length === 0 || currentUserId === null){
+        if(!upvotes || upvotes.length === 0 || currentUserId === null){
             this.setState({
                 upvoted: false
             })
             return false
         }
         else{
-            for(var i = 0; i <= upvotes.length; i++){
+            for(var i = 0; i < upvotes.length; i++){
                 if(upvotes[i].user === currentUserId){
                     this.setState({
                         upvoted: true
