@@ -52,7 +52,7 @@ router.post(
   (req, res) => {
     User.findOne({ user: req.user.id }).then(user => {
       Answer.findById(req.params.id)
-        .then(answer => {
+        .then(async answer => {
           if (
             answer.upVote.filter(upvote => upvote.user.toString() === req.user.id)
               .length > 0
@@ -65,7 +65,8 @@ router.post(
           //add user id to likes array
           answer.upVote.unshift({ user: req.user.id });
 
-          answer.save().then(answer => res.status(201).json(answer));
+          const ans = await (await answer.save()).populate('author').execPopulate()
+          res.status(201).json(ans);
         })
         .catch(err => res.status(404).json({ ansnofound: "No ans found" }));
     });
@@ -82,7 +83,7 @@ router.post(
   (req, res) => {
     User.findOne({ user: req.user.id }).then(user => {
       Answer.findById(req.params.id)
-        .then(answer => {
+        .then(async answer => {
           if (
             answer.upVote.filter(upvote => upvote.user.toString() === req.user.id)
               .length === 0
@@ -100,7 +101,8 @@ router.post(
           answer.upVote.splice(removeIndex, 1);
 
           //save
-          answer.save().then(answer => res.status(201).json(answer));
+          const ans = await (await answer.save()).populate('author').execPopulate()
+          res.status(201).json(ans);
         })
         .catch(err => res.status(404).json({ ansnofound: "No ans found" }));
     });
