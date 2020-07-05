@@ -6,7 +6,8 @@ export const Actions = Reflux.createActions([
     "authorListItemClick",
     "showComments",
     "postComment",
-    "inputChange"
+    "inputChange",
+    "upvote"
 ])
 
 class AnswerStore extends Reflux.Store {
@@ -22,7 +23,9 @@ class AnswerStore extends Reflux.Store {
             comments: [],
             loading: true,
             loadingComments: true,
-            newComment: ""
+            newComment: "",
+            upvoted: false,
+            upvoteLoading: false
         }
         this.listenables = Actions;
         this.APIService = new APIService();
@@ -44,6 +47,7 @@ class AnswerStore extends Reflux.Store {
                     questionAuthor: data.author,
                     answer: data.answerId[this.state.selectedListIndex]
                 })
+                this.upvoteCheck(this.state.answer.upVote)
                 this.setState({
                     loading: false
                 })
@@ -55,6 +59,90 @@ class AnswerStore extends Reflux.Store {
             selectedListIndex: index,
             answer: this.state.answers[index]
         })
+        this.upvoteCheck(this.state.answer.upVote)
+    }
+
+    upvoteCheck(upvotes) {
+        const currentUserId = localStorage.getItem('userId');
+        if(upvotes.length === 0 || currentUserId === null){
+            this.setState({
+                upvoted: false
+            })
+            return false
+        }
+        else{
+            for(var i = 0; i <= upvotes.length; i++){
+                if(upvotes[i].user === currentUserId){
+                    this.setState({
+                        upvoted: true
+                    })
+                    return true;
+                }
+            }
+            this.setState({
+                upvoted: false
+            })
+            return false;
+        }       
+    }
+
+    onUpvote() {
+        const { upvoted, answer, answers, selectedListIndex } = this.state;
+        this.setState({
+            upvoteLoading: true
+        })
+        if(!upvoted){
+            try{
+                this.APIService.upvoteAnswer(answer._id).then(response => {
+                    if (response.status === 201) {
+                        this.setState({
+                            upvoted: true,
+                            upvoteLoading: false
+                        })
+                        answers[selectedListIndex] = response.data;
+                        const updatedAnswers = answers;
+                        this.setState({
+                            answers: updatedAnswers
+                        })
+                    }
+                    else{
+                        this.setState({
+                            upvoteLoading: false
+                        })
+                        throw new Error();
+                    }              
+                })
+            }
+            catch(error){
+                console.log(error)
+            }           
+        }
+        else{
+            try{
+                this.APIService.unUpvoteAnswer(answer._id).then(response => {
+                    if (response.status === 201) {
+                        this.setState({
+                            upvoted: false,
+                            upvoteLoading: false
+                        })
+                        answers[selectedListIndex] = response.data;
+                        const updatedAnswers = answers;
+                        this.setState({
+                            answers: updatedAnswers
+                        })
+                    }
+                    else{
+                        this.setState({
+                            upvoteLoading: false
+                        })
+                        throw new Error();
+                    }              
+                })
+            }
+            catch(error){
+                console.log(error)
+            } 
+        }
     }
 
     onShowComments() {

@@ -43,4 +43,14 @@ export class APIService {
         setAuthToken(localStorage.getItem("jwtToken"));
         return axios.post(`${this.API_SERVER_BASE_URL}/api/c/${id}`, data).then(response => response)
     }
+
+    upvoteAnswer(id) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/a/upvote/${id}`).then(response => response)
+    }
+
+    unUpvoteAnswer(id) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/a/unupvote/${id}`).then(response => response)
+    }
 }

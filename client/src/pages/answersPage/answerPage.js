@@ -1,6 +1,7 @@
 import React from "react";
 import Reflux from "reflux";
-import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress } from "@material-ui/core";
+import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup } from "@material-ui/core";
+import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import AnswerFormDialog from "../../components/AnswerDialog/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
 import { LoginMessageDialog } from "../../components/LoginMessageDialog/LoginMessageDialog";
@@ -26,6 +27,15 @@ class AnswerPage extends Reflux.Component {
 
     componentDidMount() {
         Actions.initStore();
+    }
+
+    handleUpVoteButtonClick = () => {
+        if (localStorage.getItem("isAuthenticated")) {
+            Actions.upvote();
+        }
+        else {
+            this.handleLoginMessageDialogOpen();
+        }
     }
 
     handleCommentButtonClick = () => {
@@ -183,12 +193,20 @@ class AnswerPage extends Reflux.Component {
                     </CardContent>
                     <Divider />
                     <CardActions disableSpacing>
-                        <Button style={{ fontSize: "1.2rem" }}>
-                            UpVote
-                    </Button>
-                        <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
-                            Comment
-                    </Button>
+                        <ButtonGroup variant="text">
+                            <Button 
+                                onClick={this.handleUpVoteButtonClick} 
+                                disabled={this.state.upvoteLoading}
+                                style={this.state.upvoted ? { color: "blue", fontSize: "1.2rem" } : { fontSize: "1.2rem" }}
+                            >
+                                {<ThumbUpOutlinedIcon style={{marginRight: "5px"}}/>} 
+                                Upvote 
+                                {this.state.upvoteLoading && <CircularProgress size={20}/>}
+                            </Button>
+                            <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
+                                Comment
+                            </Button>
+                        </ButtonGroup>
                     </CardActions>
                 </Card>
             )
