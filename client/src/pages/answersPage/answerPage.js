@@ -2,6 +2,8 @@ import React from "react";
 import Reflux from "reflux";
 import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup } from "@material-ui/core";
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
+import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
+import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
 import AnswerFormDialog from "../../components/AnswerDialog/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
 import { LoginMessageDialog } from "../../components/LoginMessageDialog/LoginMessageDialog";
@@ -152,8 +154,8 @@ class AnswerPage extends Reflux.Component {
                             </Typography>
                         </div>
 
-                        <Button variant="contained" color="primary" style={{ fontSize: "1rem" }} onClick={this.handleAnswerButtonClick}>
-                            Answer
+                        <Button variant="contained" color="primary" style={{ margin: "1% 0", padding: "2%" }} onClick={this.handleAnswerButtonClick}>
+                            {<QuestionAnswerOutlinedIcon fontSize="large"/>}
                         </Button>
                     </div>
                 </div>
@@ -204,7 +206,7 @@ class AnswerPage extends Reflux.Component {
                                 {this.state.upvoteLoading && <CircularProgress size={20}/>}
                             </Button>
                             <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
-                                Comment
+                                {<CommentOutlinedIcon style={{marginRight: "5px"}}/>} Comment
                             </Button>
                         </ButtonGroup>
                     </CardActions>
