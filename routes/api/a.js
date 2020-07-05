@@ -65,7 +65,7 @@ router.post(
           //add user id to likes array
           answer.upVote.unshift({ user: req.user.id });
 
-          answer.save().then(answer => res.json(answer));
+          answer.save().then(answer => res.status(201).json(answer));
         })
         .catch(err => res.status(404).json({ ansnofound: "No ans found" }));
     });
@@ -100,7 +100,7 @@ router.post(
           answer.upVote.splice(removeIndex, 1);
 
           //save
-          answer.save().then(answer => res.json(answer));
+          answer.save().then(answer => res.status(201).json(answer));
         })
         .catch(err => res.status(404).json({ ansnofound: "No ans found" }));
     });
