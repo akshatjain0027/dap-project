@@ -1,5 +1,6 @@
 import Reflux from 'reflux';
 import { APIService } from '../../services/APIService';
+import { showNotification } from '../../notifications/Notification';
 
 export const Actions = Reflux.createActions([
     "inputChange",
@@ -35,11 +36,16 @@ class AnswerDialogStore extends Reflux.Store{
                         title: "",
                         answer: ""
                     })
-                    window.location.reload();
-                }
+                    showNotification('Successfully posted your answer', "success")
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000);                }
                 else{
-                    throw new Error;
+                    throw new Error();
                 }
+            })
+            .catch(error => {
+                showNotification('Unable to post your answer', "error")
             })
     }
 }

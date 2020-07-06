@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { SnackbarProvider } from "notistack";
 
 import './index.css';
 import App from './App';
@@ -9,7 +10,9 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
     <BrowserRouter>
-        <App />
+        <SnackbarProvider maxSnack={3}>
+            <App />
+        </SnackbarProvider>
     </BrowserRouter>
     ,
     document.getElementById('root'));

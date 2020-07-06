@@ -1,5 +1,6 @@
 import Reflux from "reflux";
 import { APIService } from "../../services/APIService";
+import { showNotification } from "../../notifications/Notification";
 
 export const Actions = Reflux.createActions([
     "questionInputChange",
@@ -32,11 +33,17 @@ class QuestionStore extends Reflux.Store{
                     this.setState({
                         question: ""
                     })
-                    window.location.reload();
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000);
+                    showNotification("Successfully posted your question.", "success")
                 }
                 else {
                     throw new Error();
                 }
+            })
+            .catch(error => {
+                showNotification("Unable to post your question!", "error")
             })
     }
 }

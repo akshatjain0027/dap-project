@@ -2,6 +2,7 @@ import Reflux from 'reflux';
 import jwt_decode from 'jwt-decode';
 import { APIService } from '../../services/APIService';
 import { StorageHelper } from '../../utils/StorageHelper';
+import { showNotification } from '../../notifications/Notification';
 
 export const Actions = Reflux.createActions([
     "inputChange",
@@ -33,7 +34,7 @@ class LoginStore extends Reflux.Store {
         })
     }
 
-    onIndexChange(index){
+    onIndexChange(index) {
         this.setState({
             selectedIndex: index
         })
@@ -44,32 +45,35 @@ class LoginStore extends Reflux.Store {
             console.log("error")
         }
         else {
-            try {
-                this.APIService.login(this.state.signInEmail, this.state.signInPassword)
-                    .then(data => {
-                        if (data) {
-                            let token = data.token;
-                            localStorage.setItem("jwtToken", token)
-                            const currentUser = jwt_decode(token);
-                            this.StorageHelper.setLoginUserData(currentUser);
-                            this.setState({
-                                signInEmail: "",
-                                signInPassword: ""
-                            })
-                            window.location.reload()
-                        }
-                        else {
-                            throw new Error;
-                        }
-                    })
-            }
-            catch (error) {
-                console.log(error)
-                this.setState({
-                    signInEmail: "",
-                    signInPassword: ""
+            this.APIService.login(this.state.signInEmail, this.state.signInPassword)
+                .then(data => {
+                    if (data) {
+                        let token = data.token;
+                        localStorage.setItem("jwtToken", token)
+                        const currentUser = jwt_decode(token);
+                        this.StorageHelper.setLoginUserData(currentUser);
+                        this.setState({
+                            signInEmail: "",
+                            signInPassword: ""
+                        })
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                        showNotification(`Login Successfull. Welcome ${currentUser.name}`, "success");
+                    }
+                    else {
+                        throw new Error();
+                    }
                 })
-            }
+                .catch(error => {
+                    showNotification('Login Failed!', "error")
+                    console.log(error)
+                    this.setState({
+                        signInEmail: "",
+                        signInPassword: ""
+                    })
+                })
+
         }
     }
 
@@ -82,34 +86,37 @@ class LoginStore extends Reflux.Store {
             console.log("password error")
         }
         else {
-            try {
-                const user = {
-                    email: signUpEmail,
-                    name: signUpName,
-                    password: signUpPassword,
-                    password2: confirmPassword
-                }
-                this.APIService.register(user)
-                    .then(data => {
-                        this.StorageHelper.setRegisterUserData(data)
-                        this.setState({
-                            signUpName: "",
-                            signUpEmail: "",
-                            signUpPassword: "",
-                            confirmPassword: ""
-                        })
-                        window.location.reload();
+            const user = {
+                email: signUpEmail,
+                name: signUpName,
+                password: signUpPassword,
+                password2: confirmPassword
+            }
+            this.APIService.register(user)
+                .then(data => {
+                    this.StorageHelper.setRegisterUserData(data)
+                    this.setState({
+                        signUpName: "",
+                        signUpEmail: "",
+                        signUpPassword: "",
+                        confirmPassword: ""
                     })
-            }
-            catch (error) {
-                console.log(error)
-                this.setState({
-                    signUpName: "",
-                    signUpEmail: "",
-                    signUpPassword: "",
-                    confirmPassword: ""
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                    showNotification(`Registration Successfull. Welcome ${data.name}`, "success")
                 })
-            }
+                .catch(error => {
+                    showNotification("Registration failed! Try again later.", "error")
+                    console.log(error)
+                    this.setState({
+                        signUpName: "",
+                        signUpEmail: "",
+                        signUpPassword: "",
+                        confirmPassword: ""
+                    })
+                })
+
 
         }
     }

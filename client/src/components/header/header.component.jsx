@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Button, Avatar, Menu, MenuItem } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Tabs, Tab, withStyles, Box, Avatar, Menu, MenuItem } from "@material-ui/core";
 import LoginDialog from "../LoginDialog/LoginDialog";
 import QuestionDialog from "../QuestionDialog/questionDialog";
 import { LoginMessageDialog } from "../LoginMessageDialog/LoginMessageDialog";
+import { showNotification } from "../../notifications/Notification";
 
 const CustTabs = withStyles(() => ({
   root: {
@@ -150,7 +151,11 @@ class Header extends React.Component {
 
   handleLogOut = () => {
     localStorage.clear();
-    window.location.reload();
+    setTimeout(()=>{
+      window.location.reload();
+    }, 1000)
+    showNotification("Successfully Logged Out", "warning");
+    showNotification("You won't be able to use various features on this site.", "warning");
   }
 
   handleAskQuestionClick = () => {

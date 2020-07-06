@@ -1,5 +1,6 @@
 import Reflux from 'reflux';
 import { APIService } from '../../services/APIService';
+import { showNotification } from '../../notifications/Notification';
 
 export const Actions = Reflux.createActions([
     "initStore",
@@ -47,10 +48,13 @@ class AnswerStore extends Reflux.Store {
                     questionAuthor: data.author,
                     answer: data.answerId[this.state.selectedListIndex]
                 })
-                this.upvoteCheck(this.state.answer.upVote)
+                this.upvoteCheck(this.state.answer? this.state.answer.upVote: [])
                 this.setState({
                     loading: false
                 })
+            })
+            .catch(error => {
+                showNotification("Failed to fetch answers", "error")
             })
     }
 
@@ -64,15 +68,15 @@ class AnswerStore extends Reflux.Store {
 
     upvoteCheck(upvotes) {
         const currentUserId = localStorage.getItem('userId');
-        if(!upvotes || upvotes.length === 0 || currentUserId === null){
+        if (!upvotes || upvotes.length === 0 || currentUserId === null) {
             this.setState({
                 upvoted: false
             })
             return false
         }
-        else{
-            for(var i = 0; i < upvotes.length; i++){
-                if(upvotes[i].user === currentUserId){
+        else {
+            for (var i = 0; i < upvotes.length; i++) {
+                if (upvotes[i].user === currentUserId) {
                     this.setState({
                         upvoted: true
                     })
@@ -83,7 +87,7 @@ class AnswerStore extends Reflux.Store {
                 upvoted: false
             })
             return false;
-        }       
+        }
     }
 
     onUpvote() {
@@ -91,57 +95,58 @@ class AnswerStore extends Reflux.Store {
         this.setState({
             upvoteLoading: true
         })
-        if(!upvoted){
-            try{
-                this.APIService.upvoteAnswer(answer._id).then(response => {
-                    if (response.status === 201) {
-                        this.setState({
-                            upvoted: true,
-                            upvoteLoading: false
-                        })
-                        answers[selectedListIndex] = response.data;
-                        const updatedAnswers = answers;
-                        this.setState({
-                            answers: updatedAnswers
-                        })
-                    }
-                    else{
-                        this.setState({
-                            upvoteLoading: false
-                        })
-                        throw new Error();
-                    }              
+        if (!upvoted) {
+            this.APIService.upvoteAnswer(answer._id).then(response => {
+                if (response.status === 201) {
+                    this.setState({
+                        upvoted: true,
+                        upvoteLoading: false
+                    })
+                    showNotification("Successfully Upvoted the answer", 'success')
+                    answers[selectedListIndex] = response.data;
+                    const updatedAnswers = answers;
+                    this.setState({
+                        answers: updatedAnswers
+                    })
+                }
+                else {
+                    this.setState({
+                        upvoteLoading: false
+                    })
+                    throw new Error();
+                }
+            })
+                .catch(error => {
+                    showNotification("Upvote failed!", "error")
+                    console.log(error)
                 })
-            }
-            catch(error){
-                console.log(error)
-            }           
         }
-        else{
-            try{
-                this.APIService.unUpvoteAnswer(answer._id).then(response => {
-                    if (response.status === 201) {
-                        this.setState({
-                            upvoted: false,
-                            upvoteLoading: false
-                        })
-                        answers[selectedListIndex] = response.data;
-                        const updatedAnswers = answers;
-                        this.setState({
-                            answers: updatedAnswers
-                        })
-                    }
-                    else{
-                        this.setState({
-                            upvoteLoading: false
-                        })
-                        throw new Error();
-                    }              
+        else {
+            this.APIService.unUpvoteAnswer(answer._id).then(response => {
+                if (response.status === 201) {
+                    this.setState({
+                        upvoted: false,
+                        upvoteLoading: false
+                    })
+                    showNotification("Removed Upvote", "info")
+                    answers[selectedListIndex] = response.data;
+                    const updatedAnswers = answers;
+                    this.setState({
+                        answers: updatedAnswers
+                    })
+                }
+                else {
+                    this.setState({
+                        upvoteLoading: false
+                    })
+                    throw new Error();
+                }
+            })
+                .catch(error => {
+                    showNotification("Failed to remove upvote!", "error")
+                    console.log(error)
                 })
-            }
-            catch(error){
-                console.log(error)
-            } 
+
         }
     }
 
@@ -164,6 +169,7 @@ class AnswerStore extends Reflux.Store {
                 }
             })
             .catch((error) => {
+                showNotification("Failed to fetch comments", "error")
                 console.log(error)
             })
     }
@@ -185,12 +191,14 @@ class AnswerStore extends Reflux.Store {
                     this.setState({
                         newComment: ""
                     })
+                    showNotification("Comment Added Successfully", "success")
                 }
                 else {
                     throw new Error();
                 }
             })
             .catch(error => {
+                showNotification("Failed to add your comment!", "error")
                 console.log(error)
             })
     }
