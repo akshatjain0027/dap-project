@@ -130,4 +130,66 @@ router.get(
   }
 );
 
+// @route   POST api/user/bookmark/q/:id
+// @desc
+// @access  Private
+router.post(
+  "/bookmark/q/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    const quesId = req.params.id;
+
+    if (
+      user.questionBookmarked.filter(
+        (questionBookmarked) => questionBookmarked.question.toString() === quesId
+      ).length > 0
+    ) {
+      return res
+        .status(404)
+        .json({
+          alreadybookmard:
+            "User already bookmarked this ques , Please Be attentive !!!",
+        });
+    }
+
+    user.questionBookmarked.unshift({ question: quesId });
+    const user2 = await user.save();
+    res.status(201).json(user2);
+  }
+);
+
+// @route   POST api/user/unbookmark/q/:id
+// @desc
+// @access  Private
+router.post(
+  "/unbookmark/q/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    const quesId = req.params.id;
+
+    if (
+      user.questionBookmarked.filter(
+        (questionBookmarked) => questionBookmarked.question.toString() === quesId
+      ).length === 0
+    ) {
+      return res
+        .status(404)
+        .json({
+          alreadybookmard:
+            "Not  bookmarked Yet  , Please Be attentive !!!",
+        });
+    }
+    const removeIndex = user.questionBookmarked
+    .map(item => item.question.toString())
+    .indexOf(req.user.id);
+
+  //Splice out of array
+  user.questionBookmarked.splice(removeIndex, 1);
+    const user2 = await user.save();
+    res.status(201).json(user2);
+  }
+);
+
 module.exports = router;
