@@ -1,9 +1,10 @@
 import React from "react";
 import Reflux from "reflux";
-import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup } from "@material-ui/core";
+import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup, Tooltip, Fab } from "@material-ui/core";
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import AnswerFormDialog from "../../components/AnswerDialog/answerFormDialog";
 import AnswerStore, { Actions } from "./answerPageStore";
 import { LoginMessageDialog } from "../../components/LoginMessageDialog/LoginMessageDialog";
@@ -23,7 +24,9 @@ class AnswerPage extends Reflux.Component {
         this.state = {
             commentBoxOpen: false,
             answerDialogOpen: false,
-            showLoginMessageDialog: false
+            showLoginMessageDialog: false,
+            questionBookmarked: false,
+            answerBookmarked: false
         }
     }
 
@@ -143,7 +146,7 @@ class AnswerPage extends Reflux.Component {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                         <Avatar src={questionAuthor.avatar} style={{ width: "20px", height: "20px" }} />
-                        <Typography variant="h5" style={{ padding: "0 1%" }}>
+                        <Typography variant="h5" style={{ padding: "0 1%", width: "40%" }}>
                             {questionAuthor.name}
                         </Typography>
                     </div>
@@ -153,10 +156,37 @@ class AnswerPage extends Reflux.Component {
                                 {question}
                             </Typography>
                         </div>
-
-                        <Button variant="contained" color="primary" style={{ margin: "1% 0", padding: "2%" }} onClick={this.handleAnswerButtonClick}>
-                            {<QuestionAnswerOutlinedIcon fontSize="large"/>}
-                        </Button>
+                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", padding: "2% 0" }}>
+                            <Tooltip 
+                                title={
+                                    <Typography variant='h6'>
+                                        {this.state.questionBookmarked? "Remove Bookmark" : "Click to bookmark this question"}
+                                    </Typography>
+                                } 
+                                arrow
+                            >
+                                <Fab 
+                                    color={this.state.questionBookmarked? "primary": "default"} 
+                                    size="large" 
+                                    style={{ marginRight: "5%"}} 
+                                    onClick={()=>{ this.setState({questionBookmarked: !this.state.questionBookmarked})}}
+                                >
+                                    <BookmarkBorderIcon fontSize="large" />
+                                </Fab>
+                            </Tooltip>
+                            <Tooltip 
+                                title={
+                                    <Typography variant='h6'>
+                                        Click to answer this question
+                                    </Typography>
+                                    } 
+                                arrow
+                            >
+                                <Fab color="primary" size="large" onClick={this.handleAnswerButtonClick}>
+                                    <QuestionAnswerOutlinedIcon fontSize="large" />
+                                </Fab>
+                            </Tooltip>
+                        </div>
                     </div>
                 </div>
             </Paper>
@@ -198,8 +228,9 @@ class AnswerPage extends Reflux.Component {
                         <ButtonGroup variant="text">
                             <Button 
                                 onClick={this.handleUpVoteButtonClick} 
+                                color={this.state.upvoted? "primary" : "default"}
                                 disabled={this.state.upvoteLoading}
-                                style={this.state.upvoted ? { color: "blue", fontSize: "1.2rem" } : { fontSize: "1.2rem" }}
+                                style={{ fontSize: "1.2rem" }}
                             >
                                 {<ThumbUpOutlinedIcon style={{marginRight: "5px"}}/>} 
                                 Upvote 
@@ -208,6 +239,23 @@ class AnswerPage extends Reflux.Component {
                             <Button style={{ fontSize: "1.2rem" }} onClick={this.handleCommentButtonClick}>
                                 {<CommentOutlinedIcon style={{marginRight: "5px"}}/>} Comment
                             </Button>
+                            <Tooltip 
+                                title={
+                                    <Typography variant="h6">
+                                        {this.state.answerBookmarked? "Remove Bookmark":"Bookmark this answer"}
+                                    </Typography>
+                                } 
+                                arrow 
+                                placement="right"
+                            >
+                                <Button 
+                                    color={this.state.answerBookmarked? "primary": "default"} 
+                                    style={{ fontSize: "1.2rem" }} 
+                                    onClick={() => this.setState({ answerBookmarked: !this.state.answerBookmarked})}
+                                >
+                                    <BookmarkBorderIcon style={{marginRight: "5px"}}/> Bookmark
+                                </Button>
+                            </Tooltip>
                         </ButtonGroup>
                     </CardActions>
                 </Card>
