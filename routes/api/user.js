@@ -130,6 +130,35 @@ router.get(
 	}
 );
 
+// @route   GET api/user/q
+// @desc    Return questions asked by user
+// @access  Private
+router.get(
+	"/q",
+	passport.authenticate("jwt", { session: false }),
+	async (req, res) => {
+
+		const user=await User.findById(req.user.id);
+		// const questions=await user.questionAsked.populate('question').sort();
+		// res.json(questions);
+	}
+);
+
+// @route   GET api/user/a
+// @desc    Return answer given by user
+// @access  Private
+router.get(
+	"/a",
+	passport.authenticate("jwt", { session: false }),
+	async (req, res) => {
+
+		const user=await User.findById(req.user.id);
+		// const answers=await user.answerGiven.populate('answer').sort();
+		// res.json(answers);
+	}
+);
+
+
 // @route   POST api/user/bookmark/:id
 // @desc
 // @access  Private
