@@ -139,8 +139,8 @@ router.get(
 	async (req, res) => {
 
 		const user=await User.findById(req.user.id);
-		const questions=await user.questionAsked.populate('question').sort();
-		res.json(questions);
+		// const questions=await user.questionAsked.populate('question').sort();
+		// res.json(questions);
 	}
 );
 
@@ -153,8 +153,8 @@ router.get(
 	async (req, res) => {
 
 		const user=await User.findById(req.user.id);
-		const answers=await user.answerGiven.populate('answer').sort();
-		res.json(answers);
+		// const answers=await user.answerGiven.populate('answer').sort();
+		// res.json(answers);
 	}
 );
 
