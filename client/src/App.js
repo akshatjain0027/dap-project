@@ -16,6 +16,14 @@ import { Router } from "react-router-dom";
 import history from "./utils/history";
 
 import "./App.css";
+import { withStyles } from "@material-ui/core";
+
+const styles = theme => ({
+  App: {
+    backgroundColor: theme.palette.background.default,
+    height: "max-content"
+  }
+})
 
 class App extends React.Component {
   constructor(props) {
@@ -42,8 +50,9 @@ class App extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <div className="App">
+      <div className={classes.App}>
         <Router history={history}>
           <div>
             <Header />
@@ -62,4 +71,4 @@ class App extends React.Component {
   }
 }
 
-export default withSnackbar(App);
+export default withStyles(styles, {withTheme: true})(withSnackbar(App));

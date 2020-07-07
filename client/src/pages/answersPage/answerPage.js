@@ -341,7 +341,7 @@ class AnswerPage extends Reflux.Component {
         const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.questionId} />
         const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose} />
         return this.state.loading ? <div><CircularProgress style={{ margin: "25% 50%" }} size={100} thickness={2.5} /></div> : (
-            <div>
+            <div style={{ margin: "0 10%" }} >
                 {this.state.answerDialogOpen && answerDialog}
                 {this.state.showLoginMessageDialog && loginMessageDialog}
                 <Divider orientation="vertical" />
