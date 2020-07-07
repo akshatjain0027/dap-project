@@ -49,23 +49,24 @@ const UserSchema = new Schema(
         },
       },
     ],
-    questionBookmarked: [
-      {
-        question: {
+    bookmarked: {
+      question: [
+        {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Question",
         },
-      },
-    ],
-    answerBookmarked: [
-      {
-        answer: {
+      ],
+      answer: [
+        {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Answer",
         },
-      },
-    ],
+      ],
+    },
+    // topic:[{}],
+    // genre:[{}],
   },
+  
   {
     timestamps: true,
   }

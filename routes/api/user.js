@@ -130,63 +130,65 @@ router.get(
   }
 );
 
-// @route   POST api/user/bookmark/q/:id
+// @route   POST api/user/bookmark/:id
 // @desc
 // @access  Private
 router.post(
-  "/bookmark/q/:id",
+  "/bookmark/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    const type = req.body.type;
     const user = await User.findById(req.user.id);
-    const quesId = req.params.id;
-
-    if (
-      user.questionBookmarked.filter(
-        (questionBookmarked) => questionBookmarked.question.toString() === quesId
-      ).length > 0
-    ) {
-      return res
-        .status(404)
-        .json({
+    if (type === "question") {
+      const quesId = req.params.id;
+      if (
+        user.bookmarked.question.filter(
+          (question) => question.toString() === quesId
+        ).length > 0
+      ) {
+        return res.status(404).json({
           alreadybookmard:
             "User already bookmarked this ques , Please Be attentive !!!",
         });
-    }
+      }
 
-    user.questionBookmarked.unshift({ question: quesId });
+      user.bookmarked.question.unshift(quesId);
+    }
+    console.log("Not a question");
+    console.log(type);
     const user2 = await user.save();
     res.status(201).json(user2);
   }
 );
 
-// @route   POST api/user/unbookmark/q/:id
+// @route   POST api/user/unbookmark/:id
 // @desc
 // @access  Private
 router.post(
-  "/unbookmark/q/:id",
+  "/unbookmark/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const user = await User.findById(req.user.id);
-    const quesId = req.params.id;
+    const type = req.body.type;
+    if (type === "question") {
+      const quesId = req.params.id;
 
-    if (
-      user.questionBookmarked.filter(
-        (questionBookmarked) => questionBookmarked.question.toString() === quesId
-      ).length === 0
-    ) {
-      return res
-        .status(404)
-        .json({
-          alreadybookmard:
-            "Not  bookmarked Yet  , Please Be attentive !!!",
+      if (
+        user.bookmarked.question.filter(
+          (question) => question.toString() === quesId
+        ).length === 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard: "Not  bookmarked Yet  , Please Be attentive !!!",
         });
-    }
-    const removeIndex = user.questionBookmarked
-    .map(item => item.question.toString())
-    .indexOf(req.user.id);
+      }
+      const removeIndex = user.bookmarked.question
+        .map((item) => item.toString())
+        .indexOf(req.user.id);
 
-  //Splice out of array
-  user.questionBookmarked.splice(removeIndex, 1);
+      //Splice out of array
+      user.bookmarked.question.splice(removeIndex, 1);
+    }console.log(type);
     const user2 = await user.save();
     res.status(201).json(user2);
   }
