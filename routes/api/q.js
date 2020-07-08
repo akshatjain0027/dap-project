@@ -72,6 +72,9 @@ router.post(
         author: req.user._id,
       });
       await question.save();
+      const user=await User.findById(req.user.id)
+      user.questionAsked.unshift(question.id);
+    await user.save();
       res.status(201).send(question);
     } catch (e) {
       res.status(400).send(e);
