@@ -12,6 +12,7 @@ const validateLoginInput = require("../../validators/login");
 
 //Load User model
 const User = require("../../models/user");
+const user = require("../../models/user");
 
 // @route   GET api/users/test
 // @desc    Test users route
@@ -20,6 +21,15 @@ router.get("/test", (req, res) => {
 	res.json({
 		msg: "users works",
 	});
+});
+
+// @route   GET api/users/
+// @desc    Test users route
+// @access  Public
+router.get("/", async(req, res) => {
+
+	const users=await User.find();
+	res.json(users);
 });
 
 // @route   POST api/users/register

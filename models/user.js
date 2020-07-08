@@ -35,18 +35,18 @@ const UserSchema = new Schema(
     ],
     questionAsked: [
       {
-        question: {
+        
           type: mongoose.Schema.Types.ObjectId,
           ref: "Question",
-        },
+        
       },
     ],
     answerGiven: [
       {
-        answer: {
+        
           type: mongoose.Schema.Types.ObjectId,
           ref: "Answer",
-        },
+        
       },
     ],
     bookmarked: {
