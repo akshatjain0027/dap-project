@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
 import { withSnackbar } from "notistack";
 
@@ -8,7 +8,7 @@ import Homepage from "./pages/homepage/homepage.component";
 import ContactPage from "./pages/contactpage/contactpage.component";
 import AboutPage from "./pages/aboutpage/aboutpage.component";
 import TeamPage from "./pages/teampage/teampage.component";
-import ProfilePage from "./pages/profilePage/profilepage.component";
+import ProfilePage from "./pages/profilePage/ProfilePage";
 import AnswerPage from "./pages/answersPage/answerPage";
 
 import { initializeSnackbar } from "./notifications/Notification";
@@ -17,6 +17,7 @@ import history from "./utils/history";
 
 import "./App.css";
 import { withStyles } from "@material-ui/core";
+import { LoginMessageDialog } from "./components/LoginMessageDialog/LoginMessageDialog";
 
 const styles = theme => ({
   App: {
@@ -62,7 +63,7 @@ class App extends React.Component {
               <Route exact path="/about" component={AboutPage} />
               <Route exact path="/about/team" component={TeamPage} />
               <Route exact path="/question/:id" component={AnswerPage} />
-              <Route exact path="/profile/:id" component={ProfilePage} />
+              <Route exact path="/profile/:id" component={localStorage.getItem('isAuthenticated')? ProfilePage: Homepage} />
             </Switch>
           </div>
         </Router>
