@@ -1,52 +1,78 @@
-
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Answer = require("./answer");
 const Schema = mongoose.Schema;
 
 //Create Schema
 
-const UserSchema = new Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	email: {
-		type: String,
-		required: true
-	},
-	password: {
-		type: String,
-		required: true
-	},
-	avatar: {
-		type: String
-	}
-},{
-  timestamps: true,
-});
+const UserSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+    },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    questionAsked: [
+      {
+        
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Question",
+        
+      },
+    ],
+    answerGiven: [
+      {
+        
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Answer",
+        
+      },
+    ],
+    bookmarked: {
+      question: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Question",
+        },
+      ],
+      answer: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Answer",
+        },
+      ],
+    },
+    // topic:[{}],
+    // genre:[{}],
+  },
+  
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = User = mongoose.model('User', UserSchema);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = User = mongoose.model("User", UserSchema);
 
 /*const mongoose = require("mongoose");
 const validator = require("validator");
@@ -176,5 +202,3 @@ const User = mongoose.model("User", userSchema);
 
 module.exports = User;
 */
-
-

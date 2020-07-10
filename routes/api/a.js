@@ -29,12 +29,15 @@ router.post("/:id", passport.authenticate('jwt', { session: false }),async (req,
       questionId: req.params.id,
       author: req.user._id,
     });
-    await answer.save();
+    const ans=await answer.save();
     
     const question = await Question.findById(req.params.id);
     question.answerId.unshift(answer._id);
     await question.save();
     
+    const user=await User.findById(req.user.id)
+      user.answerGiven.unshift(ans.id);
+    await user.save();
 
     res.status(201).send(await question.populate('answerId').execPopulate());
   } catch (e) {

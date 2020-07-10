@@ -12,6 +12,7 @@ const validateLoginInput = require("../../validators/login");
 
 //Load User model
 const User = require("../../models/user");
+const user = require("../../models/user");
 
 // @route   GET api/users/test
 // @desc    Test users route
@@ -21,6 +22,31 @@ router.get("/test", (req, res) => {
     msg: "users works",
   });
 });
+
+// @route   GET api/users/
+// @desc    Profile
+// @access  
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await (await User.findById(req.user.id))
+      .populate([
+        {
+		  path: "bookmarked",
+		  populate:[{path:"question"},{path:"answer"}]
+        },
+        {
+          path: "questionAsked",
+        },
+        {
+          path: "answerGiven",
+        },
+      ])
+      .execPopulate();
+    res.json(user);
+  }
+);
 
 // @route   POST api/users/register
 // @desc    Register User
@@ -127,6 +153,132 @@ router.get(
       name: req.user.name,
       email: req.user.email,
     });
+  }
+);
+
+// @route   GET api/user/q
+// @desc    Return questions asked by user
+// @access  Private
+router.get(
+  "/q",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    // const questions=await user.questionAsked.populate('question').sort();
+    // res.json(questions);
+  }
+);
+
+// @route   GET api/user/a
+// @desc    Return answer given by user
+// @access  Private
+router.get(
+  "/a",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    // const answers=await user.answerGiven.populate('answer').sort();
+    // res.json(answers);
+  }
+);
+
+// @route   POST api/user/bookmark/:id
+// @desc
+// @access  Private
+router.post(
+  "/bookmark/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const type = req.body.type;
+    const user = await User.findById(req.user.id);
+
+    if (type === "question") {
+      const quesId = req.params.id;
+      if (
+        user.bookmarked.question.filter(
+          (question) => question.toString() === quesId
+        ).length > 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard:
+            "User already bookmarked this ques , Please Be attentive !!!",
+        });
+      }
+
+      user.bookmarked.question.unshift(quesId);
+    }
+    if (type === "answer") {
+      const ansId = req.params.id;
+      if (
+        user.bookmarked.answer.filter((answer) => answer.toString() === ansId)
+          .length > 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard:
+            "User already bookmarked this ans , Please Be attentive !!!",
+        });
+      }
+
+      user.bookmarked.answer.unshift(ansId);
+    }
+    console.log(type);
+    const user2 = await user.save();
+    res.status(201).json(user2);
+  }
+);
+
+// @route   POST api/user/unbookmark/:id
+// @desc
+// @access  Private
+router.post(
+  "/unbookmark/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findById(req.user.id);
+    const type = req.body.type;
+
+    if (type === "question") {
+      const quesId = req.params.id;
+
+      if (
+        user.bookmarked.question.filter(
+          (question) => question.toString() === quesId
+        ).length === 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard: "Not  bookmarked Yet  , Please Be attentive !!!",
+        });
+      }
+      const removeIndex = user.bookmarked.question
+        .map((item) => item.toString())
+        .indexOf(req.user.id);
+
+      //Splice out of array
+      user.bookmarked.question.splice(removeIndex, 1);
+    }
+
+    if (type === "answer") {
+      const ansId = req.params.id;
+
+      if (
+        user.bookmarked.answer.filter((answer) => answer.toString() === ansId)
+          .length === 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard: "Not  bookmarked Yet  , Please Be attentive !!!",
+        });
+      }
+      const removeIndex = user.bookmarked.answer
+        .map((item) => item.toString())
+        .indexOf(req.user.id);
+
+      //Splice out of array
+      user.bookmarked.answer.splice(removeIndex, 1);
+    }
+
+    console.log(type);
+    const user2 = await user.save();
+    res.status(201).json(user2);
   }
 );
 
