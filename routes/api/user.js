@@ -23,14 +23,14 @@ router.get("/test", (req, res) => {
   });
 });
 
-// @route   GET api/users/
+// @route   GET api/users/:id
 // @desc    Profile
 // @access  
 router.get(
-  "/",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    const user = await (await User.findById(req.user.id))
+    const user = await (await User.findById(req.params.id))
       .populate([
         {
 		  path: "bookmarked",
