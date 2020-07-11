@@ -27,12 +27,12 @@ class Homepage extends Reflux.Component {
             <CardContent>
               <div style={{ display: "flex", flexDirection: "row", padding: "0 20px"}}>
                 <Avatar src={post.author.avatar} style={{ padding: "10px 10px 10px 0px"}}/>
-                <Typography variant="subtitle1" style={{ paddingTop: "12px" }}>
+                <Typography variant="subtitle1" style={{ paddingTop: "12px", color: "white" }} component={Link} href={`/profile/${post.author._id}`}>
                   {post.author.name}
                 </Typography>
               </div>
               <div style={{ padding: "0 20px", cursor: "pointer" }}>
-                <Typography variant="h3" component={Link} href={`/question/${post._id}`}>
+                <Typography variant="h4" style={{ color: "#2196f3"}} component={Link} href={`/question/${post._id}`}>
                   {post.question}
                 </Typography>
               </div>             
@@ -43,14 +43,14 @@ class Homepage extends Reflux.Component {
                 </Typography>
                 :
                 <div>
-                  <Typography variant="h5" style={{ padding: "10px 20px" }}>
+                  <Typography variant="h6" style={{ padding: "10px 20px" }}>
                     {post.answerId[0].answer}
                   </Typography>
-                  {
+                  {/* {
                     post.answerId[0].images?
                     <img src={post.answerId[0].images[0]} style={{ width: "100%", height: "250px", padding: "10px 20px" }} /> 
                     : null
-                  }
+                  } */}
                 </div>
               }              
             </CardContent>

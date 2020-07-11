@@ -1,6 +1,6 @@
 import React from "react";
 import Reflux from "reflux";
-import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup, Tooltip, Fab } from "@material-ui/core";
+import { Drawer, Typography, withStyles, Hidden, Divider, Card, CardContent, ListItemAvatar, Avatar, List, ListItem, ListItemText, Paper, Button, CardHeader, CardMedia, CardActions, TextField, CircularProgress, ButtonGroup, Tooltip, Fab, Link } from "@material-ui/core";
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import QuestionAnswerOutlinedIcon from '@material-ui/icons/QuestionAnswerOutlined';
@@ -146,7 +146,7 @@ class AnswerPage extends Reflux.Component {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                         <Avatar src={questionAuthor.avatar} style={{ width: "20px", height: "20px" }} />
-                        <Typography variant="h5" style={{ padding: "0 1%", width: "40%" }}>
+                        <Typography variant="h5" style={{ padding: "0 1%", width: "40%", color: "white" }} component={Link} href={`/profile/${questionAuthor._id}`}>
                             {questionAuthor.name}
                         </Typography>
                     </div>
@@ -205,7 +205,7 @@ class AnswerPage extends Reflux.Component {
                             <Avatar src={answer.author.avatar} />
                         }
                         title={
-                            <Typography variant="h5">
+                            <Typography variant="h5" style={{ color: "white" }} component={Link} href={`/profile/${answer.author? answer.author._id: null}`}>
                                 {answer.author ? answer.author.name : null}
                             </Typography>
                         }
