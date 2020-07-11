@@ -24,9 +24,7 @@ class AnswerPage extends Reflux.Component {
         this.state = {
             commentBoxOpen: false,
             answerDialogOpen: false,
-            showLoginMessageDialog: false,
-            questionBookmarked: false,
-            answerBookmarked: false
+            showLoginMessageDialog: false
         }
     }
 
@@ -49,6 +47,15 @@ class AnswerPage extends Reflux.Component {
                 commentBoxOpen: !this.state.commentBoxOpen
             })
             Actions.showComments();
+        }
+        else {
+            this.handleLoginMessageDialogOpen();
+        }
+    }
+
+    handleBookmarkButtonClick(type) {
+        if (localStorage.getItem("isAuthenticated")) {
+            Actions.bookmark(type);
         }
         else {
             this.handleLoginMessageDialogOpen();
@@ -166,10 +173,10 @@ class AnswerPage extends Reflux.Component {
                                 arrow
                             >
                                 <Fab 
-                                    color={this.state.questionBookmarked? "primary": "default"} 
+                                    color={this.state.questionBookmarked? "secondary": "default"} 
                                     size="large" 
                                     style={{ marginRight: "5%"}} 
-                                    onClick={()=>{ this.setState({questionBookmarked: !this.state.questionBookmarked})}}
+                                    onClick={() => this.handleBookmarkButtonClick("question")}
                                 >
                                     <BookmarkBorderIcon fontSize="large" />
                                 </Fab>
@@ -249,9 +256,9 @@ class AnswerPage extends Reflux.Component {
                                 placement="right"
                             >
                                 <Button 
-                                    color={this.state.answerBookmarked? "primary": "default"} 
+                                    color={this.state.answerBookmarked? "secondary": "default"} 
                                     style={{ fontSize: "1.2rem" }} 
-                                    onClick={() => this.setState({ answerBookmarked: !this.state.answerBookmarked})}
+                                    onClick={() => this.handleBookmarkButtonClick('answer')}
                                 >
                                     <BookmarkBorderIcon style={{marginRight: "5px"}}/> Bookmark
                                 </Button>
