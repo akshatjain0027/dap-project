@@ -56,7 +56,7 @@ export class APIService {
 
     getUserProfile(id) {
         setAuthToken(localStorage.getItem("jwtToken"));
-        return axios.get(`http://localhost:5000/api/user/${id}`).then(response => response)
+        return axios.get(`${this.API_SERVER_BASE_URL}/api/user/${id}`).then(response => response)
     }
 
     bookmark(type, id) {
