@@ -53,4 +53,23 @@ export class APIService {
         setAuthToken(localStorage.getItem("jwtToken"));
         return axios.post(`${this.API_SERVER_BASE_URL}/api/a/unupvote/${id}`).then(response => response)
     }
+
+    getUserProfile(id) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.get(`http://localhost:5000/api/user/${id}`).then(response => response)
+    }
+
+    bookmark(type, id) {
+        const data = {
+            type: type
+        }
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/user/bookmark/${id}`, data).then(response => response)
+    }
+
+    unBookmark(type, id) {
+        const data = {
+            type: type
+        }
+        return axios.post(`${this.API_SERVER_BASE_URL}/api/user/unbookmark/${id}`, data).then(response => response)
+    }
 }

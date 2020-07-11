@@ -8,13 +8,15 @@ export const Actions = Reflux.createActions([
     "showComments",
     "postComment",
     "inputChange",
-    "upvote"
+    "upvote",
+    "bookmark"
 ])
 
 class AnswerStore extends Reflux.Store {
     constructor(props) {
         super(props);
         this.state = {
+            userData: {},
             answers: [],
             questionId: "",
             question: "",
@@ -26,7 +28,9 @@ class AnswerStore extends Reflux.Store {
             loadingComments: true,
             newComment: "",
             upvoted: false,
-            upvoteLoading: false
+            upvoteLoading: false,
+            questionBookmarked: false,
+            answerBookmarked: false
         }
         this.listenables = Actions;
         this.APIService = new APIService();
@@ -49,6 +53,9 @@ class AnswerStore extends Reflux.Store {
                     answer: data.answerId[this.state.selectedListIndex]
                 })
                 this.upvoteCheck(this.state.answer? this.state.answer.upVote: [])
+                if(localStorage.getItem('isAuthenticated')){
+                    this.fetchUserDetails();
+                }
                 this.setState({
                     loading: false
                 })
@@ -58,12 +65,24 @@ class AnswerStore extends Reflux.Store {
             })
     }
 
+    fetchUserDetails() {
+        const id = localStorage.getItem('userId');
+        this.APIService.getUserProfile(id).then(response => {
+            this.setState({
+                userData: response.data
+            })
+            this.questionBookmarkCheck();
+            this.answerBookmarkCheck();
+        })
+    }
+
     onAuthorListItemClick(index) {
         this.setState({
             selectedListIndex: index,
             answer: this.state.answers[index]
         })
-        this.upvoteCheck(this.state.answer.upVote)
+        this.upvoteCheck(this.state.answer.upVote);
+        this.answerBookmarkCheck();
     }
 
     upvoteCheck(upvotes) {
@@ -201,6 +220,140 @@ class AnswerStore extends Reflux.Store {
                 showNotification("Failed to add your comment!", "error")
                 console.log(error)
             })
+    }
+
+    questionBookmarkCheck() {
+        const{ userData, questionId } = this.state;
+        const{ bookmarked } = userData;
+        if(bookmarked.question.length !== 0){
+            for(var i = 0; i < bookmarked.question.length; i++){
+                if(questionId === bookmarked.question[i]._id){
+                    this.setState({
+                        questionBookmarked: true
+                    })
+                    return true
+                }
+            }
+            this.setState({
+                questionBookmarked: false
+            })
+            return
+        } 
+        else{
+            this.setState({
+                questionBookmarked: false
+            })
+            return 
+        }
+    }
+
+    answerBookmarkCheck() {
+        const { userData, answer } = this.state;
+        const { bookmarked } = userData;
+        if(bookmarked.answer.length !== 0){
+            for(var i = 0; i < bookmarked.answer.length; i++){
+                if(answer._id === bookmarked.answer[i]._id){
+                    this.setState({
+                        answerBookmarked: true
+                    })
+                    return true
+                }
+            }
+            this.setState({
+                answerBookmarked: false
+            })
+            return false
+        }
+        else{
+            this.setState({
+                answerBookmarked: false
+            })
+            return false;
+        }
+    }
+
+    onBookmark(type) {
+        const { questionBookmarked, questionId, answerBookmarked, answer } = this.state;
+        if(type === 'question'){
+            if(!questionBookmarked){
+                showNotification('Applying Bookmark on this question. Please Wait..', 'info')
+                this.APIService.bookmark(type, questionId)
+                    .then(response => {
+                        if (response.status === 201) {
+                            this.setState({
+                                questionBookmarked: true
+                            })
+                            showNotification('Successfully Bookmarked the question.', 'success')
+                        }
+                        else {
+                            throw new Error();
+                        }
+                    })
+                    .catch(error => {
+                        showNotification('Failed to bookmark the question! Try again Later.', 'error')
+                        console.log(error)                       
+                    })
+            }
+            else{
+                showNotification('Removing bookmark from this question. Please wait..', 'info')
+                this.APIService.unBookmark(type, questionId)
+                    .then(response => {
+                        if(response.status === 201){
+                            this.setState({
+                                questionBookmarked: false
+                            })
+                            showNotification('Removed Bookmark', 'warning')
+                        }
+                        else{
+                            throw new Error();
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        showNotification('Failed to remove bookmark! Try again later.', 'error')
+                    })
+            }
+        }
+        else if(type === 'answer'){
+            if(!answerBookmarked){
+                showNotification('Applying Bookmark on this answer. Please Wait..', 'info')
+                this.APIService.bookmark(type, answer._id)
+                    .then(response => {
+                        if (response.status === 201) {
+                            this.setState({
+                                answerBookmarked: true
+                            })
+                            showNotification('Successfully Bookmarked the answer.', 'success')
+                        }
+                        else {
+                            throw new Error();
+                        }
+                    })
+                    .catch(error => {
+                        showNotification('Failed to bookmark the answer! Try again Later.', 'error')
+                        console.log(error)                       
+                    })
+            }
+            else{
+                showNotification('Removing bookmark from this answer. Please wait..', 'info')
+                this.APIService.unBookmark(type, answer._id)
+                    .then(response => {
+                        if(response.status === 201){
+                            this.setState({
+                                answerBookmarked: false
+                            })
+                            showNotification('Removed Bookmark', 'warning')
+                        }
+                        else{
+                            throw new Error();
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        showNotification('Failed to remove bookmark! Try again later.', 'error')
+                    })
+            }
+        }
     }
 }
 
