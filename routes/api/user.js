@@ -246,7 +246,7 @@ router.post(
         ).length === 0
       ) {
         return res.status(404).json({
-          alreadybookmard: "Not  bookmarked Yet  , Please Be attentive !!!",
+          notBookmarked: "Not  bookmarked Yet  , Please Be attentive !!!",
         });
       }
       const removeIndex = user.bookmarked.question
@@ -265,7 +265,7 @@ router.post(
           .length === 0
       ) {
         return res.status(404).json({
-          alreadybookmard: "Not  bookmarked Yet  , Please Be attentive !!!",
+          notBookmarked: "Not  bookmarked Yet  , Please Be attentive !!!",
         });
       }
       const removeIndex = user.bookmarked.answer
