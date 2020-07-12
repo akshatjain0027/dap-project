@@ -22,7 +22,7 @@ const styles = theme => ({
 const CustDialog = withStyles(theme => ({
     paper: {
         width: "450px",
-        height: "200px"
+        height: "220px"
     }
 }))(Dialog);
 
@@ -55,6 +55,10 @@ class QuestionDialog extends Reflux.Component{
                         variant="outlined"
                         value={this.state.question}
                         onChange={this.handleChange}
+                        inputProps={ { style: {
+                            fontSize: "1.2rem"
+                        }}}
+                        autoFocus
                     />
                     <Button variant="contained" color="primary" disabled={this.state.question === ""} onClick={this.handleAskButtonClick} className={classes.dialogButton}>
                         Ask

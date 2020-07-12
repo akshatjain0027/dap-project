@@ -6,7 +6,7 @@ import AnswerDialogStore, { Actions } from "./answerDialogStore";
 const CustDialog = withStyles(theme => ({
     paper: {
         width: "600px",
-        height: "400px"
+        height: "420px"
     }
 }))(Dialog);
 
@@ -33,7 +33,7 @@ class AnswerFormDialog extends Reflux.Component {
         return (
             <div>
                 <CustDialog open={handleOpen} onClose={handleClose} maxWidth="md" fullWidth="true">
-                    <Box style={{ padding: "10px 24px" }}>
+                    <Box style={{ padding: "12px 24px" }}>
                         <Typography variant="h4">
                             Write your Answer
                         </Typography>
@@ -50,6 +50,9 @@ class AnswerFormDialog extends Reflux.Component {
                                     name="title"
                                     onChange={this.handleInputChange}
                                     style={{ width: "40%" }}
+                                    inputProps={ { style: {
+                                        fontSize: "1.2rem"
+                                    }}}
                                 />
                             </Box>
                             <Box display="flex" flexDirection="column" padding="10px 0">
@@ -66,6 +69,9 @@ class AnswerFormDialog extends Reflux.Component {
                                     multiline
                                     rows={15}
                                     style={{ width: "100%" }}
+                                    inputProps={ { style: {
+                                        fontSize: "1.5rem"
+                                    }}}
                                 />
                             </Box>
                         </Box>

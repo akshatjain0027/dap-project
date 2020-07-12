@@ -321,6 +321,14 @@ class AnswerPage extends Reflux.Component {
                                     onChange={this.handleCommentInputChange}
                                     style={{ width: "100%" }}
                                     size="medium"
+                                    inputProps={ { style: {
+                                        fontSize: "1.2rem"
+                                    }}}
+                                    InputLabelProps={{
+                                        style: {
+                                            fontSize: "1.2rem"
+                                        }
+                                    }}
                                 />
                             </ListItem>
                             <Button
