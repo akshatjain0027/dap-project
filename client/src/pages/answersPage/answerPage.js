@@ -329,6 +329,7 @@ class AnswerPage extends Reflux.Component {
                                             fontSize: "1.2rem"
                                         }
                                     }}
+                                    autoComplete="off"
                                 />
                             </ListItem>
                             <Button

@@ -59,6 +59,7 @@ class QuestionDialog extends Reflux.Component{
                             fontSize: "1.2rem"
                         }}}
                         autoFocus
+                        autoComplete="off"
                     />
                     <Button variant="contained" color="primary" disabled={this.state.question === ""} onClick={this.handleAskButtonClick} className={classes.dialogButton}>
                         Ask
