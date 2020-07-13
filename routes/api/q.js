@@ -13,7 +13,7 @@ const Answer = require("../../models/answer");
 router.get("/", async (req, res) => {
   const questions = await Question.find()
     .populate("author")
-    .populate({ path: "answerId", options: { sort: { upVoteCount: -1 } } });
+    .populate({ path: "answerId", options: { sort: { upVoteCount: -1 } } }).sort({createdAt:-1});
 
   if (!questions)
     return res.status(400).json({ nopostsfound: "No Questions found" });
