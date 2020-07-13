@@ -74,7 +74,7 @@ class AnswerStore extends Reflux.Store {
                 userData: response.data
             })
             this.questionBookmarkCheck();
-            this.answerBookmarkCheck(this.state.userData);
+            this.answerBookmarkCheck();
         })
     }
 
@@ -84,7 +84,7 @@ class AnswerStore extends Reflux.Store {
             answer: this.state.answers[index]
         })
         this.upvoteCheck(this.state.answer.upVote);
-        this.answerBookmarkCheck(this.state.userData);
+        this.answerBookmarkCheck();
     }
 
     upvoteCheck(upvotes) {
@@ -249,8 +249,8 @@ class AnswerStore extends Reflux.Store {
         }
     }
 
-    answerBookmarkCheck(userData) {
-        const { answers, answer } = this.state;
+    answerBookmarkCheck() {
+        const { answers, answer, userData } = this.state;
         const { bookmarked } = userData;
         if(bookmarked.answer.length !== 0 && answers.length !== 0 ){
             for(var i = 0; i < bookmarked.answer.length; i++){
@@ -314,7 +314,8 @@ class AnswerStore extends Reflux.Store {
                             this.setState({
                                 questionBookmarked: false
                             })
-                            this.setState({
+                            this.setState({ 
+                                userData: response.data,
                                 disableQuestionBookmark: false
                             })
                             showNotification('Removed Bookmark', 'warning')
@@ -371,6 +372,7 @@ class AnswerStore extends Reflux.Store {
                                 answerBookmarked: false
                             })
                             this.setState({
+                                userData: response.data,
                                 disableAnswerBookmark: false
                             })
                             showNotification('Removed Bookmark', 'warning')
