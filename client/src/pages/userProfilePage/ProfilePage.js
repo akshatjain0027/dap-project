@@ -1,9 +1,10 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Grid, Avatar, Typography, withStyles, Box, Button, Tabs, Tab, CircularProgress, Card, Link, Fab, Chip } from '@material-ui/core';
+import { Grid, Avatar, Typography, withStyles, Box, Button, Tabs, Tab, CircularProgress, Card, Link, Fab, Chip, Tooltip } from '@material-ui/core';
 import ProfilePageStore, { ProfilePageActions } from './ProfilePageStore';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 
 const styles = theme => ({
     name: {
@@ -143,20 +144,93 @@ class ProfilePage extends Reflux.Component {
             <Grid direction="column" container style={{ paddingLeft: "20%"}}>
                 {   
                     bookmarkedQuestions.length === 0 ?
-                    <Typography variant="h2">You have not asked any questions yet</Typography>
+                    <Typography variant="h2" style={{ color: "white", textAlign: "center", margin: "auto"}}>You have not bookmarked any questions yet</Typography>
                     :
                     bookmarkedQuestions.map((question, index) => {
                         return (
-                            <Card key={index} elevation={8} style={{ width: "80%", marginBottom: "5%",padding: "8px" }}>
+                            <Card key={index} elevation={8} style={{ width: "75%", marginBottom: "5%",padding: "8px" }}>
                                 <Box pl={1}>
                                     <Typography varinat="caption">
                                         {`${question.answerId.length} Answers by various authors`} 
                                     </Typography>
                                 </Box>
-                                <Box p={1}>
+                                <Box p={1} display="flex" flexDirection="row" justifyContent="space-between">
                                     <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white"}}>
                                         {question.question}
                                     </Typography>
+                                    <Tooltip
+                                        title={
+                                            <Typography variant='h6'>
+                                                Remove Bookmark
+                                            </Typography>
+                                            } 
+                                        arrow
+                                    >
+                                        <Fab size="small" color="primary">
+                                            <BookmarkBorderIcon fontSize="small"/>
+                                        </Fab>
+                                    </Tooltip>
+                                </Box>
+                            </Card>
+                        )
+                    })
+                }
+            </Grid>
+        )
+    }
+
+    getBookmarkedAnswers = () => {
+        const { bookmarkedAnswers } = this.state;
+        const { classes } = this.props;
+        return (
+            <Grid direction="column" container style={{ paddingLeft: "25%"}}>
+                {   
+                    bookmarkedAnswers.length === 0 ? <Typography variant="h2">You have not bookmarked any answer.</Typography> 
+                    :bookmarkedAnswers.map((answer, index)=>{
+                        return(
+                            <Card key={index} elevation={8}  style={{ width: "70%", marginBottom: "5%", padding: "8px"}}>
+                                <Box p={2} display="flex" flexDirection="row" justifyContent="space-between">
+                                    <Box width="80%">
+                                        <Typography variant="h4" style={{ paddingTop: "8px"}}>
+                                            {answer.title}
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Tooltip
+                                            title={
+                                                <Typography variant='h6'>
+                                                    Remove Bookmark
+                                            </Typography>
+                                            }
+                                            arrow
+                                        >
+                                            <Fab
+                                                size="medium"
+                                                color="primary"
+                                            >
+                                                <BookmarkBorderIcon fontSize="large" />
+                                            </Fab>
+                                        </Tooltip>
+                                    </Box>   
+                                </Box>
+                                <Box p={2}>
+                                    <Typography variant="h6">
+                                        {answer.answer}
+                                    </Typography>
+                                </Box>
+                                <Box p={2} display="flex" flexDirection="row" >
+                                    <Chip 
+                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.upVote.length}</Avatar>} 
+                                        label="UPVOTES"
+                                        variant="outlined"
+                                        className={classes.chip}
+                                    />
+                                    <Chip 
+                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.commentId.length}</Avatar>} 
+                                        label="COMMENTS"
+                                        variant="outlined"
+                                        className={classes.chip}
+                                    />
                                 </Box>
                             </Card>
                         )
@@ -204,7 +278,7 @@ class ProfilePage extends Reflux.Component {
                             {this.getBookmarkedQuestions()}
                         </TabPanels>
                         <TabPanels value={this.state.selectedIndex} index={3}>
-                            Hello jain
+                            {this.getBookmarkedAnswers()}
                         </TabPanels>
                     </Grid>
                 </Grid>
