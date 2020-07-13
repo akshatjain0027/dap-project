@@ -223,6 +223,13 @@ router.post(
     }
     console.log(type);
     const user2 = await user.save();
+    await user2.populate(
+      {
+    path: "bookmarked",
+    populate:[{path:"question"},{path:"answer"}]
+      }
+    )
+    .execPopulate();
     res.status(201).json(user2);
   }
 );
@@ -278,6 +285,13 @@ router.post(
 
     console.log(type);
     const user2 = await user.save();
+    await user2.populate(
+      {
+    path: "bookmarked",
+    populate:[{path:"question"},{path:"answer"}]
+      }
+    )
+    .execPopulate();
     res.status(201).json(user2);
   }
 );
