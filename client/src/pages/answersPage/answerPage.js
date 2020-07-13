@@ -176,6 +176,7 @@ class AnswerPage extends Reflux.Component {
                                     color={this.state.questionBookmarked? "secondary": "default"} 
                                     size="large" 
                                     style={{ marginRight: "5%"}} 
+                                    disabled={this.state.disableQuestionBookmark}
                                     onClick={() => this.handleBookmarkButtonClick("question")}
                                 >
                                     <BookmarkBorderIcon fontSize="large" />
@@ -258,6 +259,7 @@ class AnswerPage extends Reflux.Component {
                                 <Button 
                                     color={this.state.answerBookmarked? "secondary": "default"} 
                                     style={{ fontSize: "1.2rem" }} 
+                                    disabled={this.state.disableAnswerBookmark}
                                     onClick={() => this.handleBookmarkButtonClick('answer')}
                                 >
                                     <BookmarkBorderIcon style={{marginRight: "5px"}}/> Bookmark

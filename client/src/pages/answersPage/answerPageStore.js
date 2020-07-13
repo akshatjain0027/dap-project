@@ -30,7 +30,9 @@ class AnswerStore extends Reflux.Store {
             upvoted: false,
             upvoteLoading: false,
             questionBookmarked: false,
-            answerBookmarked: false
+            answerBookmarked: false,
+            disableQuestionBookmark: false,
+            disableAnswerBookmark: false
         }
         this.listenables = Actions;
         this.APIService = new APIService();
@@ -72,7 +74,7 @@ class AnswerStore extends Reflux.Store {
                 userData: response.data
             })
             this.questionBookmarkCheck();
-            this.answerBookmarkCheck();
+            this.answerBookmarkCheck(this.state.userData);
         })
     }
 
@@ -82,7 +84,7 @@ class AnswerStore extends Reflux.Store {
             answer: this.state.answers[index]
         })
         this.upvoteCheck(this.state.answer.upVote);
-        this.answerBookmarkCheck();
+        this.answerBookmarkCheck(this.state.userData);
     }
 
     upvoteCheck(upvotes) {
@@ -247,10 +249,10 @@ class AnswerStore extends Reflux.Store {
         }
     }
 
-    answerBookmarkCheck() {
-        const { userData, answer } = this.state;
+    answerBookmarkCheck(userData) {
+        const { answers, answer } = this.state;
         const { bookmarked } = userData;
-        if(bookmarked.answer.length !== 0){
+        if(bookmarked.answer.length !== 0 && answers.length !== 0 ){
             for(var i = 0; i < bookmarked.answer.length; i++){
                 if(answer._id === bookmarked.answer[i]._id){
                     this.setState({
@@ -275,13 +277,20 @@ class AnswerStore extends Reflux.Store {
     onBookmark(type) {
         const { questionBookmarked, questionId, answerBookmarked, answer } = this.state;
         if(type === 'question'){
+            this.setState({
+                disableQuestionBookmark: true
+            })
             if(!questionBookmarked){
                 showNotification('Applying Bookmark on this question. Please Wait..', 'info')
                 this.APIService.bookmark(type, questionId)
                     .then(response => {
                         if (response.status === 201) {
                             this.setState({
-                                questionBookmarked: true
+                                questionBookmarked: true,
+                            })
+                            this.setState({
+                                userData: response.data,
+                                disableQuestionBookmark: false
                             })
                             showNotification('Successfully Bookmarked the question.', 'success')
                         }
@@ -291,7 +300,10 @@ class AnswerStore extends Reflux.Store {
                     })
                     .catch(error => {
                         showNotification('Failed to bookmark the question! Try again Later.', 'error')
-                        console.log(error)                       
+                        console.log(error)   
+                        this.setState({
+                            disableQuestionBookmark: false
+                        })                    
                     })
             }
             else{
@@ -302,6 +314,9 @@ class AnswerStore extends Reflux.Store {
                             this.setState({
                                 questionBookmarked: false
                             })
+                            this.setState({
+                                disableQuestionBookmark: false
+                            })
                             showNotification('Removed Bookmark', 'warning')
                         }
                         else{
@@ -311,10 +326,16 @@ class AnswerStore extends Reflux.Store {
                     .catch(error => {
                         console.log(error);
                         showNotification('Failed to remove bookmark! Try again later.', 'error')
+                        this.setState({
+                            disableQuestionBookmark: false
+                        })
                     })
             }
         }
         else if(type === 'answer'){
+            this.setState({
+                disableAnswerBookmark: true
+            })
             if(!answerBookmarked){
                 showNotification('Applying Bookmark on this answer. Please Wait..', 'info')
                 this.APIService.bookmark(type, answer._id)
@@ -322,6 +343,10 @@ class AnswerStore extends Reflux.Store {
                         if (response.status === 201) {
                             this.setState({
                                 answerBookmarked: true
+                            })
+                            this.setState({
+                                userData: response.data,
+                                disableAnswerBookmark: false
                             })
                             showNotification('Successfully Bookmarked the answer.', 'success')
                         }
@@ -331,6 +356,9 @@ class AnswerStore extends Reflux.Store {
                     })
                     .catch(error => {
                         showNotification('Failed to bookmark the answer! Try again Later.', 'error')
+                        this.setState({
+                            disableAnswerBookmark: false
+                        })
                         console.log(error)                       
                     })
             }
@@ -342,6 +370,9 @@ class AnswerStore extends Reflux.Store {
                             this.setState({
                                 answerBookmarked: false
                             })
+                            this.setState({
+                                disableAnswerBookmark: false
+                            })
                             showNotification('Removed Bookmark', 'warning')
                         }
                         else{
@@ -350,6 +381,9 @@ class AnswerStore extends Reflux.Store {
                     })
                     .catch(error => {
                         console.log(error);
+                        this.setState({
+                            disableAnswerBookmark: false
+                        })
                         showNotification('Failed to remove bookmark! Try again later.', 'error')
                     })
             }

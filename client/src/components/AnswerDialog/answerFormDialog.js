@@ -78,7 +78,7 @@ class AnswerFormDialog extends Reflux.Component {
                             </Box>
                         </Box>
                         <Box style={{ display: "flex", flexDirection: "row" }}>
-                            <Button onClick={this.handleSubmitAnswer} variant="contained" color="primary" style={{ margin: "0 2px" }} disabled={answer === ""}>
+                            <Button onClick={this.handleSubmitAnswer} variant="contained" color="primary" style={{ margin: "0 2px" }} disabled={answer === "" || title === ""}>
                                 Submit
                             </Button>
                             <Button onClick={handleClose} variant="contained" color="secondary" style={{ margin: "0 2px" }}>
