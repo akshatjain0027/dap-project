@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-
+require('dotenv').config();
 //Load  model
 const User = require("../../models/user");
 const Question = require("../../models/question");
@@ -75,6 +75,16 @@ router.post(
       const user=await User.findById(req.user.id)
       user.questionAsked.unshift(question.id);
     await user.save();
+    var Pusher = require('pusher');
+
+var pusher = new Pusher({
+  appId: '1038267',
+  key: 'f362433add071a0773b3',
+  secret: '7d007d3aef30030385b8',
+  cluster: 'ap2',
+  encrypted: true
+});
+pusher.trigger('notifications', 'questions_updated', question, req.headers['x-socket-id'])
       res.status(201).send(question);
     } catch (e) {
       res.status(400).send(e);

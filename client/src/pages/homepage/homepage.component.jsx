@@ -5,7 +5,7 @@ import Year from "../../components/year/year.component";
 import Loader from 'react-loader-spinner';
 import { Card, CardContent, Typography, Avatar, Link } from "@material-ui/core";
 import HomepageStore, { Actions } from "./homepageStore";
-
+import Pusher from "pusher-js"
 
 class Homepage extends Reflux.Component {
   constructor() {
@@ -74,7 +74,29 @@ class Homepage extends Reflux.Component {
 
   render() {
     const { loading } = this.state;
+    var pusher = new Pusher('f362433add071a0773b3', {
+      cluster: 'ap2'
+    });
+    pusher.connection.bind('connected', function () {
+      // attach the socket ID to all outgoing Axios requests
+      //axios.defaults.headers.common['X-Socket-Id'] = pusher.connection.socket_id;
+  });
 
+  // request permission to display notifications, if we don't alreay have it
+  Notification.requestPermission();
+  pusher.subscribe('notifications')
+          .bind('questions_updated', function (question) {
+              // if we're on the home page, show an "Updated" badge
+              // if (window.location.pathname === "/") {
+              //     $('a[href="/posts/' + post._id + '"]').append('<span class="badge badge-primary badge-pill">Updated</span>');
+              // }
+              var notification = new Notification(question.question + " was just updated. Check it out.");
+              notification.onclick = function (event) {
+                window.location =  '/question/'+ question._id;
+                  event.preventDefault();
+                  notification.close();
+              }
+          });
     return (
       <div className="container">
         <div className="row homepage">

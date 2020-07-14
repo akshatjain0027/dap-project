@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
-
+require('dotenv').config();
 const user = require("./routes/api/user");
 const q = require("./routes/api/q"); //Question
 const a = require("./routes/api/a"); //Answer
