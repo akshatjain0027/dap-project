@@ -193,10 +193,10 @@ class Header extends React.Component {
         >
           <MenuItem
             onClick={() => {
-              window.location.href = window.location.href + `profile/${localStorage.getItem("userId")}`
+              window.location.pathname = `/profile/${localStorage.getItem("userId")}`
               this.handleAvatarMenuClose();
             }}>
-            My Profile
+              My Profile
           </MenuItem>
           <MenuItem
             onClick={() => {

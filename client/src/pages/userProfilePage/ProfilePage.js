@@ -5,6 +5,7 @@ import ProfilePageStore, { ProfilePageActions } from './ProfilePageStore';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import { showNotification } from '../../notifications/Notification';
 
 const styles = theme => ({
     name: {
@@ -43,7 +44,15 @@ class ProfilePage extends Reflux.Component {
     }
 
     componentDidMount() {
-        ProfilePageActions.initStore();
+        if(localStorage.getItem('isAuthenticated')){
+            ProfilePageActions.initStore();
+        }
+        else{
+            showNotification('You need to login first!', 'error');
+            setInterval(() => {
+                window.location.pathname = "/";
+            }, 1500)
+        }
     }
 
     handleChange = (event, newValue) => {
@@ -81,7 +90,7 @@ class ProfilePage extends Reflux.Component {
     }
 
     getUserAnswers = () => {
-        const { userAnswers } = this.state;
+        const { userAnswers, loggedInUser } = this.state;
         const { classes } = this.props;
         return (
             <Grid direction="column" container style={{ paddingLeft: "25%"}}>
@@ -96,20 +105,24 @@ class ProfilePage extends Reflux.Component {
                                             {answer.title}
                                         </Typography>
                                     </Box>
-                                    <Box width="20%" display="flex" flexDirection="row" justifyContent="space-around">
-                                        <Fab
-                                            color="secondary"
-                                            size="medium"
-                                        >
-                                            <EditIcon fontSize="large" />
-                                        </Fab>
-                                        <Fab
-                                            size="medium"
-                                            color="primary"
-                                        >
-                                            <DeleteIcon fontSize="large" />
-                                        </Fab>
-                                    </Box>   
+                                    {
+                                        loggedInUser &&
+                                        <Box width="20%" display="flex" flexDirection="row" justifyContent="space-around">
+                                            <Fab
+                                                color="secondary"
+                                                size="medium"
+                                            >
+                                                <EditIcon fontSize="large" />
+                                            </Fab>
+                                            <Fab
+                                                size="medium"
+                                                color="primary"
+                                            >
+                                                <DeleteIcon fontSize="large" />
+                                            </Fab>
+                                        </Box> 
+                                    }
+                                      
                                 </Box>
                                 <Box p={2}>
                                     <Typography variant="h6">
@@ -139,7 +152,7 @@ class ProfilePage extends Reflux.Component {
     }
 
     getBookmarkedQuestions = () => {
-        const { bookmarkedQuestions } = this.state;
+        const { bookmarkedQuestions, loggedInUser } = this.state;
         return(
             <Grid direction="column" container style={{ paddingLeft: "20%"}}>
                 {   
@@ -158,18 +171,21 @@ class ProfilePage extends Reflux.Component {
                                     <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white"}}>
                                         {question.question}
                                     </Typography>
-                                    <Tooltip
-                                        title={
-                                            <Typography variant='h6'>
-                                                Remove Bookmark
+                                    {
+                                        loggedInUser && 
+                                        <Tooltip
+                                            title={
+                                                <Typography variant='h6'>
+                                                    Remove Bookmark
                                             </Typography>
-                                            } 
-                                        arrow
-                                    >
-                                        <Fab size="small" color="primary">
-                                            <BookmarkBorderIcon fontSize="small"/>
-                                        </Fab>
-                                    </Tooltip>
+                                            }
+                                            arrow
+                                        >
+                                            <Fab size="small" color="primary">
+                                                <BookmarkBorderIcon fontSize="small" />
+                                            </Fab>
+                                        </Tooltip>
+                                    }
                                 </Box>
                             </Card>
                         )
@@ -180,7 +196,7 @@ class ProfilePage extends Reflux.Component {
     }
 
     getBookmarkedAnswers = () => {
-        const { bookmarkedAnswers } = this.state;
+        const { bookmarkedAnswers, loggedInUser } = this.state;
         const { classes } = this.props;
         return (
             <Grid direction="column" container style={{ paddingLeft: "25%"}}>
@@ -195,23 +211,26 @@ class ProfilePage extends Reflux.Component {
                                             {answer.title}
                                         </Typography>
                                     </Box>
-                                    <Box>
-                                        <Tooltip
-                                            title={
-                                                <Typography variant='h6'>
-                                                    Remove Bookmark
+                                    {
+                                        loggedInUser &&
+                                        <Box>
+                                            <Tooltip
+                                                title={
+                                                    <Typography variant='h6'>
+                                                        Remove Bookmark
                                             </Typography>
-                                            }
-                                            arrow
-                                        >
-                                            <Fab
-                                                size="medium"
-                                                color="primary"
+                                                }
+                                                arrow
                                             >
-                                                <BookmarkBorderIcon fontSize="large" />
-                                            </Fab>
-                                        </Tooltip>
-                                    </Box>   
+                                                <Fab
+                                                    size="medium"
+                                                    color="primary"
+                                                >
+                                                    <BookmarkBorderIcon fontSize="large" />
+                                                </Fab>
+                                            </Tooltip>
+                                        </Box>
+                                    }                                     
                                 </Box>
                                 <Box p={2}>
                                     <Typography variant="h6">
@@ -241,7 +260,7 @@ class ProfilePage extends Reflux.Component {
     }
 
     render() {
-        const { loading, userData } = this.state;
+        const { loading, userData, loggedInUser } = this.state;
         const { classes } = this.props;
         return loading ? <div><CircularProgress style={{ margin: "25% 50%" }} size={100} thickness={2.5} /></div> : (
             <Grid container>
@@ -256,15 +275,22 @@ class ProfilePage extends Reflux.Component {
                             </Typography>
                         </Box>
                         <Box width="100%" textAlign="center">
-                            <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
-                                EDIT PROFILE
-                            </Button>
+                            {
+                                loggedInUser ? 
+                                <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
+                                    EDIT PROFILE
+                                </Button> :
+                                <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
+                                    FOLLOW
+                                </Button>
+                            }
+                            
                         </Box>
                     </Grid>
                     <Grid width="100%" md={9}>
                         <Tabs centered value={this.state.selectedIndex} onChange={this.handleChange}>
-                            <Tab label="Your Questions" className={classes.tabName} />
-                            <Tab label="Your Answers" className={classes.tabName} />
+                            <Tab label="Questions" className={classes.tabName} />
+                            <Tab label="Answers" className={classes.tabName} />
                             <Tab label="Bookmarked Questions" className={classes.tabName} />
                             <Tab label="Bookmarked Answers" className={classes.tabName} />
                         </Tabs>

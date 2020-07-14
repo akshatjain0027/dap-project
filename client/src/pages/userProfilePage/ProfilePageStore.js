@@ -42,6 +42,11 @@ class ProfilePageStore extends Reflux.Store{
                     this.setState({
                         loading: false
                     })
+                    if(localStorage.getItem('userId') === this.state.userData._id){
+                        this.setState({
+                            loggedInUser: true
+                        })
+                    }
                 }
                 else{
                     throw new Error();
