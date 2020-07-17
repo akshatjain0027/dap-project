@@ -153,7 +153,7 @@ class AnswerPage extends Reflux.Component {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "row" }}>
                         <Avatar src={questionAuthor.avatar} style={{ width: "20px", height: "20px" }} />
-                        <Typography variant="h5" style={{ padding: "0 1%", width: "40%", color: "white" }} component={Link} href={`/profile/${questionAuthor._id}`}>
+                        <Typography variant="h5" style={{ padding: "0 1%", width: "40%", color: "white" }} component={localStorage.getItem('isAuthenticated')? Link: null} href={`/profile/${questionAuthor._id}`}>
                             {questionAuthor.name}
                         </Typography>
                     </div>
@@ -176,6 +176,7 @@ class AnswerPage extends Reflux.Component {
                                     color={this.state.questionBookmarked? "secondary": "default"} 
                                     size="large" 
                                     style={{ marginRight: "5%"}} 
+                                    disabled={this.state.disableQuestionBookmark}
                                     onClick={() => this.handleBookmarkButtonClick("question")}
                                 >
                                     <BookmarkBorderIcon fontSize="large" />
@@ -212,7 +213,7 @@ class AnswerPage extends Reflux.Component {
                             <Avatar src={answer.author.avatar} />
                         }
                         title={
-                            <Typography variant="h5" style={{ color: "white" }} component={Link} href={`/profile/${answer.author? answer.author._id: null}`}>
+                            <Typography variant="h5" style={{ color: "white" }} component={localStorage.getItem('isAuthenticated')? Link: null} href={`/profile/${answer.author? answer.author._id: null}`}>
                                 {answer.author ? answer.author.name : null}
                             </Typography>
                         }
@@ -258,6 +259,7 @@ class AnswerPage extends Reflux.Component {
                                 <Button 
                                     color={this.state.answerBookmarked? "secondary": "default"} 
                                     style={{ fontSize: "1.2rem" }} 
+                                    disabled={this.state.disableAnswerBookmark}
                                     onClick={() => this.handleBookmarkButtonClick('answer')}
                                 >
                                     <BookmarkBorderIcon style={{marginRight: "5px"}}/> Bookmark

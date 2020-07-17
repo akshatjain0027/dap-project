@@ -5,6 +5,7 @@ import Year from "../../components/year/year.component";
 import Loader from 'react-loader-spinner';
 import { Card, CardContent, Typography, Avatar, Link } from "@material-ui/core";
 import HomepageStore, { Actions } from "./homepageStore";
+import { LoginMessageDialog } from "../../components/LoginMessageDialog/LoginMessageDialog";
 
 
 class Homepage extends Reflux.Component {
@@ -27,7 +28,7 @@ class Homepage extends Reflux.Component {
             <CardContent>
               <div style={{ display: "flex", flexDirection: "row", padding: "0 20px"}}>
                 <Avatar src={post.author.avatar} style={{ padding: "10px 10px 10px 0px"}}/>
-                <Typography variant="subtitle1" style={{ paddingTop: "12px", color: "white" }} component={Link} href={`/profile/${post.author._id}`}>
+                <Typography variant="subtitle1" style={{ paddingTop: "12px", color: "white" }} component={localStorage.getItem('isAuthenticated')? Link: null} href={`/profile/${post.author._id}`}>
                   {post.author.name}
                 </Typography>
               </div>
