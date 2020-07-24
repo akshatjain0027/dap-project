@@ -49,20 +49,20 @@ const UserSchema = new Schema(
         
       },
     ],
-    bookmarked: {
-      question: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Question",
-        },
-      ],
-      answer: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Answer",
-        },
-      ],
-    },
+    // bookmarked: {
+    //   question: [
+    //     {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: "Question",
+    //     },
+    //   ],
+    //   answer: [
+    //     {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: "Answer",
+    //     },
+    //   ],
+    // },
     // topic:[{}],
     // genre:[{}],
   },
