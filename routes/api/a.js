@@ -6,6 +6,7 @@ const passport = require('passport');
 const User = require('../../models/user');
 const Question = require('../../models/question');
 const Answer = require('../../models/answer');
+const Comment = require('../../models/comment');
 
 
 /**
@@ -68,6 +69,35 @@ router.put(
     }
   }
 );
+
+/**
+ * DELETE delete Answer
+ */
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+        const answer = await Answer.findById(req.params.id)
+        const question=await Question.findById(answer.questionId);
+        
+        const removeIndex = question.answerId.map(item => item.toString()).indexOf(req.params.id);      
+        question.answerId.splice(removeIndex, 1);
+      
+
+        await Comment.deleteMany({_id:{$in:answer.commentId}})
+
+          await question.save()
+
+          await answer.remove()    
+      res.status(200).send({success:true});
+    } catch (e) {
+     console.log(e)
+      res.status(400).send(e);
+    }
+  }
+);
+
 
 // @route   POST api/a/upvote/:id
 // @desc    Upvote answer
