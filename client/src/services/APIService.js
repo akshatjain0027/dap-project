@@ -39,6 +39,11 @@ export class APIService {
         return axios.post(`${this.API_SERVER_BASE_URL}/api/a/${id}`, data).then(response => response)
     }
 
+    updateAnswer(id, data) {
+        setAuthToken(localStorage.getItem("jwtToken"));
+        return axios.put(`${this.API_SERVER_BASE_URL}/api/a/${id}`, data).then(response => response)
+    }
+
     postComment(id, data) {
         setAuthToken(localStorage.getItem("jwtToken"));
         return axios.post(`${this.API_SERVER_BASE_URL}/api/c/${id}`, data).then(response => response)

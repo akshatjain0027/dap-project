@@ -24,12 +24,33 @@ class AnswerDialogStore extends Reflux.Store{
         })
     }
 
-    onSubmitAnswer(id){
+    onSubmitAnswer(id, type='submit', title, answer){
         const data = {
-            title: this.state.title,
-            answer: this.state.answer
+            title: title,
+            answer: answer
         }
-        this.APIService.postAnswer(id, data)
+        if(type === 'edit'){
+            this.APIService.updateAnswer(id, data)
+                .then(response => {
+                    if(response.status === 200){
+                        this.setState({
+                            title: "",
+                            answer: ""
+                        })
+                        showNotification('Successfully edited your answer', "success")
+                        setTimeout(()=>{
+                            window.location.reload();
+                        }, 1000);                }
+                    else{
+                        throw new Error();
+                    }
+                })
+                .catch(error => {
+                    showNotification('Unable to edit your answer', "error")
+                })
+        }
+        else{
+            this.APIService.postAnswer(id, data)
             .then(response => {
                 if(response.status === 201){
                     this.setState({
@@ -47,6 +68,8 @@ class AnswerDialogStore extends Reflux.Store{
             .catch(error => {
                 showNotification('Unable to post your answer', "error")
             })
+        }
+        
     }
 }
 

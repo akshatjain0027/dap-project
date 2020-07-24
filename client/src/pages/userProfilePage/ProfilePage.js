@@ -6,6 +6,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import { showNotification } from '../../notifications/Notification';
+import AnswerFormDialog from '../../components/AnswerDialog/answerFormDialog';
+import { LoginMessageDialog } from '../../components/LoginMessageDialog/LoginMessageDialog';
 
 const styles = theme => ({
     name: {
@@ -40,6 +42,10 @@ const TabPanels = props => {
 class ProfilePage extends Reflux.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            answerDialogOpen: false,
+            showLoginMessageDialog: false
+        }
         this.store = ProfilePageStore;
     }
 
@@ -57,6 +63,44 @@ class ProfilePage extends Reflux.Component {
 
     handleChange = (event, newValue) => {
         ProfilePageActions.indexChange(newValue)
+    }
+
+    handleAnswerDialogClose = () => {
+        this.setState({
+            answerDialogOpen: false
+        })
+    }
+
+    handleAnswerDialogOpen = () => {
+        this.setState({
+            answerDialogOpen: true
+        })
+    }
+
+    handleLoginMessageDialogOpen = () => {
+        this.setState({
+            showLoginMessageDialog: true
+        });
+    }
+
+    handleLoginMessageDialogClose = () => {
+        this.setState({
+            showLoginMessageDialog: false
+        });
+    }
+
+    handleAnswerButtonClick = (id, title, answer) => {
+        if (localStorage.getItem("isAuthenticated")) {
+            this.setState({
+                id: id,
+                title: title,
+                answer: answer
+            })
+            this.handleAnswerDialogOpen();
+        }
+        else {
+            this.handleLoginMessageDialogOpen();
+        }
     }
 
     getUserQuestions = () => {
@@ -111,6 +155,7 @@ class ProfilePage extends Reflux.Component {
                                             <Fab
                                                 color="secondary"
                                                 size="medium"
+                                                onClick={() => this.handleAnswerButtonClick(answer._id, answer.title, answer.answer)}
                                             >
                                                 <EditIcon fontSize="large" />
                                             </Fab>
@@ -262,8 +307,13 @@ class ProfilePage extends Reflux.Component {
     render() {
         const { loading, userData, loggedInUser } = this.state;
         const { classes } = this.props;
+        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.id} type="edit" title={this.state.title} answer={this.state.answer}/>
+        const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose} />
+
         return loading ? <div><CircularProgress style={{ margin: "25% 50%" }} size={100} thickness={2.5} /></div> : (
             <Grid container>
+                {this.state.answerDialogOpen && answerDialog}
+                {this.state.showLoginMessageDialog && loginMessageDialog}
                 <Grid direction="row" container style={{ margin: "8% 5%" }}>
                     <Grid container direction="column" md={3} alignItems="center">
                         <Box alignItems="center" width="100%">

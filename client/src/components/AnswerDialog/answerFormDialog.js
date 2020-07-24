@@ -16,6 +16,15 @@ class AnswerFormDialog extends Reflux.Component {
         this.store = AnswerDialogStore;
     }
 
+    componentDidMount(){
+        if(this.props.title || this.props.answer){
+            this.setState({
+                title: this.props.title,
+                answer: this.props.answer
+            })
+        }
+    }
+
     handleInputChange = event => {
         const { name, value } = event.target;
         Actions.inputChange(name, value);
@@ -23,7 +32,8 @@ class AnswerFormDialog extends Reflux.Component {
 
     handleSubmitAnswer = () => {
         const { questionId } = this.props;
-        Actions.submitAnswer(questionId);
+        const { title, answer } = this.state
+        Actions.submitAnswer(questionId, this.props.type, title, answer);
         this.props.handleClose();
     }
 
@@ -79,7 +89,7 @@ class AnswerFormDialog extends Reflux.Component {
                         </Box>
                         <Box style={{ display: "flex", flexDirection: "row" }}>
                             <Button onClick={this.handleSubmitAnswer} variant="contained" color="primary" style={{ margin: "0 2px" }} disabled={answer === "" || title === ""}>
-                                Submit
+                                {this.props.type && this.props.type == 'edit'? "Edit": "Submit"}
                             </Button>
                             <Button onClick={handleClose} variant="contained" color="secondary" style={{ margin: "0 2px" }}>
                                 Cancel
