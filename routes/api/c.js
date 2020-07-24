@@ -81,4 +81,28 @@ router.put(
   }
 );
 
+
+/**
+ * DELETE delete Comment
+ */
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+        const comment = await Comment.findById(req.params.id)
+        const answer=await Answer.findById(comment.answerId);
+        
+        const removeIndex = answer.commentId.map(item => item.toString()).indexOf(req.params.id);      
+        answer.commentId.splice(removeIndex, 1);
+      
+          await answer.save()
+          await comment.remove()    
+      res.status(200).send({success:true});
+    } catch (e) {
+     console.log(e)
+      res.status(400).send(e);
+    }
+  }
+);
 module.exports = router;
