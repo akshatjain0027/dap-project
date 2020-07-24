@@ -45,6 +45,30 @@ router.post("/:id", passport.authenticate('jwt', { session: false }),async (req,
   }
 });
 
+/**
+ * PUT UPDATE/edit answer
+ */
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+    const data = {
+      title:req.body.title,
+      answer:req.body.answer,
+      image:req.body.image
+    }
+      
+      const answer=await Answer.findByIdAndUpdate(req.params.id,{$set: data},{new:true})
+      
+      res.status(200).send(answer);
+    } catch (e) {
+     
+      res.status(400).send(e);
+    }
+  }
+);
+
 // @route   POST api/a/upvote/:id
 // @desc    Upvote answer
 // @access  Private
