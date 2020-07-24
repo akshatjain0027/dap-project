@@ -82,4 +82,26 @@ router.post(
   }
 );
 
+/**
+ * PUT UPDATE/edit QUESTION
+ */
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+    const data = {
+      question:req.body.question
+    }
+      
+      const question=await Question.findByIdAndUpdate(req.params.id,{$set: data},{new:true})
+      
+      res.status(200).send(question);
+    } catch (e) {
+     
+      res.status(400).send(e);
+    }
+  }
+);
+
 module.exports = router;
