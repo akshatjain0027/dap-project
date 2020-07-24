@@ -82,7 +82,7 @@ router.post("/register", async (req, res) => {
 
       //Sign Token
       const token = await jwt.sign(payload, keys.secretOrKey, {
-        expiresIn: 43200,
+        expiresIn: '30d',
       });
       res.json({
         success: true,
@@ -125,7 +125,7 @@ router.post("/login", (req, res) => {
         jwt.sign(
           payload,
           keys.secretOrKey,
-          { expiresIn: 43200 },
+          { expiresIn: '30d' },
           (err, token) => {
             res.json({
               success: true,
