@@ -12,8 +12,9 @@ const validateLoginInput = require("../../validators/login");
 
 //Load User model
 const User = require("../../models/user");
-const user = require("../../models/user");
 
+const Question=require("../../models/question")
+const Answer=require("../../models/answer")
 // @route   GET api/users/test
 // @desc    Test users route
 // @access  Public
@@ -321,6 +322,8 @@ router.post(
       }
 
       answer.bookmarkUsersId.unshift(req.user.id);
+      const ans = await answer.save()
+      return res.status(201).json(ans)
     }
     if (type === "question") {
       const question = await Question.findById(req.params.id);
@@ -335,17 +338,20 @@ router.post(
       }
 
       question.bookmarkUsersId.unshift(req.user.id);
+      const ques=await question.save()
+      return res.status(201).json(ques)
     }
 
-    console.log(type);
-    const user2 = await user.save();
-    await user2
-      .populate({
-        path: "bookmarked",
-        populate: [{ path: "question" }, { path: "answer" }],
-      })
-      .execPopulate();
-    res.status(201).json(user2);
+    // console.log(type);
+    
+    // const user2 = await user.save();
+    // await user2
+    //   .populate({
+    //     path: "bookmarked",
+    //     populate: [{ path: "question" }, { path: "answer" }],
+    //   })
+    //   .execPopulate();
+    // res.status(201).json(user2);
   }
 );
 
@@ -360,7 +366,7 @@ router.post(
     const type = req.body.type;
 
     if (type === "question") {
-
+      const question = await Question.findById(req.params.id)
       if (
         question.bookmarkUsersId.filter(
           (item) => item.toString() === req.user.id
@@ -376,11 +382,14 @@ router.post(
 
       //Splice out of array
       question.bookmarkUsersId.splice(removeIndex, 1);
+
+      const ques=await question.save()
+      return res.status(201).json(ques)
     }
 
     if (type === "answer") {
       
-
+      const answer = await Answer.findById(req.params.id);
       if (
         answer.bookmarkUsersId.filter((item) => item.toString() === req.user.id)
           .length === 0
@@ -395,18 +404,21 @@ router.post(
 
       //Splice out of array
       answer.bookmarkUsersId.splice(removeIndex, 1);
+
+      const ans = await answer.save()
+      return res.status(201).json(ans)
     }
 
-    console.log(type);
-    const user2 = await user.save();
-    await user2.populate(
-      {
-    path: "bookmarked",
-    populate:[{path:"question"},{path:"answer"}]
-      }
-    )
-    .execPopulate();
-    res.status(201).json(user2);
+    // console.log(type);
+    // const user2 = await user.save();
+    // await user2.populate(
+    //   {
+    // path: "bookmarked",
+    // populate:[{path:"question"},{path:"answer"}]
+    //   }
+    // )
+    // .execPopulate();
+    // res.status(201).json(user2);
   }
 );
 module.exports = router;
