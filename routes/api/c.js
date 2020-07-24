@@ -59,6 +59,26 @@ router.post("/:id", passport.authenticate('jwt', { session: false }),async (req,
     }
   });
 
-
+/**
+ * PUT UPDATE/edit Comments
+ */
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+    const data = {
+      content:req.body.content
+    }
+      
+      const comment=await Comment.findByIdAndUpdate(req.params.id,{$set: data},{new:true})
+      
+      res.status(200).send(comment);
+    } catch (e) {
+     
+      res.status(400).send(e);
+    }
+  }
+);
 
 module.exports = router;
