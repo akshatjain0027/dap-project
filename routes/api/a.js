@@ -153,15 +153,12 @@ router.delete(
         const removeIndex = question.answerId.map(item => item.toString()).indexOf(req.params.id);      
         question.answerId.splice(removeIndex, 1);
       
-      
+        
       await User.updateMany({'bookmarked.answer':{$in:answer._id}},{$pullAll:{'bookmarked.answer':[answer._id]}})
-
-
-        await Comment.deleteMany({_id:{$in:answer.commentId}})
-
-          await question.save()
-
-          await answer.remove()    
+      await User.updateOne({_id:req.user.id},{$pullAll:{answerGiven:[answer._id]}})
+      await Comment.deleteMany({_id:{$in:answer.commentId}})
+      await question.save()
+      await answer.remove()    
       res.status(200).send({success:true});
     } catch (e) {
      console.log(e)

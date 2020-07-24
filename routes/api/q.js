@@ -6,7 +6,7 @@ const passport = require("passport");
 const User = require("../../models/user");
 const Question = require("../../models/question");
 const Answer = require("../../models/answer");
-
+const Comment = require('../../models/comment');
 /**
  * GET ALL Questions In DB
  */
@@ -103,5 +103,61 @@ router.put(
     }
   }
 );
+
+/**
+ * Delete QUESTION
+ */
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const question = await Question.findById(req.params.id);
+    //Check for user auth
+    if (question.author.toString() !== req.user.id) {
+      return res
+        .status(401)
+        .json({ notauthorized: "User not authorized" });
+    }
+
+// const user=User.findById(req.user.id)
+// user.questionAsked.splice(user.questionAsked.map(item => item.toString()).indexOf(req.params.id), 1);
+
+//user.answerGiven
+/// ___----------> already done below updateMany()
+// const removeIndex = user.bookmark.question.map(item => item.toString()).indexOf(req.params.id);
+// if(removeIndex!==-1){
+//   user.bookmark.question.splice(removeIndex, 1);
+// }
+
+//user.bookmark.answer
+    await User.updateMany({answerGiven:{$in:question.answerId}},{$pull:{answerGiven:question.answerId}})
+    await User.updateOne({_id:req.user.id},{$pullAll:{questionAsked:[question._id]}})
+    await User.updateMany({'bookmarked.question':{$in:question._id}},{$pull:{'bookmarked.question':question._id}})
+    await User.updateMany({'bookmarked.answer':{$in:question.answerId}},{$pull:{'bookmarked.answer':question.answerId}})
+
+    const answerIdArray=question.answerId;
+
+    await question.populate('answerId').execPopulate()
+    const a=question.answerId
+    const newarr=[]
+    a.forEach(  element => {
+      
+      newarr.push(element.commentId)
+    });
+    const commentIdArray=newarr.flat(1);    
+
+    await Comment.deleteMany({_id:{$in:commentIdArray}})
+    await Answer.deleteMany({_id:{$in:answerIdArray}})
+    await Question.deleteOne({_id:req.params.id}) 
+    
+      res.json({success:true});
+    } catch (e) {
+      console.log(e)
+      res.status(400).send(e);
+    }
+  }
+);
+
 
 module.exports = router;
