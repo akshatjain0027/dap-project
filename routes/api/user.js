@@ -181,7 +181,7 @@ router.get(
     // res.json(answers);
   }
 );
-
+/*
 // @route   POST api/user/bookmark/:id
 // @desc
 // @access  Private
@@ -295,5 +295,118 @@ router.post(
     res.status(201).json(user2);
   }
 );
+*/
 
+//New 
+
+
+// @route   POST api/user/bookmark/:id
+// @desc
+// @access  Private
+router.post(
+  "/bookmark/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const type = req.body.type;
+    if (type === "answer") {
+      const answer = await Answer.findById(req.params.id);
+      if (
+        answer.bookmarkUsersId.filter((item) => item.toString() === req.user.id)
+          .length > 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard:
+            "User already bookmarked this ans , Please Be attentive !!!",
+        });
+      }
+
+      answer.bookmarkUsersId.unshift(req.user.id);
+    }
+    if (type === "question") {
+      const question = await Question.findById(req.params.id);
+      if (
+        question.bookmarkUsersId.filter((item) => item.toString() === req.user.id)
+          .length > 0
+      ) {
+        return res.status(404).json({
+          alreadybookmard:
+            "User already bookmarked this ans , Please Be attentive !!!",
+        });
+      }
+
+      question.bookmarkUsersId.unshift(req.user.id);
+    }
+
+    console.log(type);
+    const user2 = await user.save();
+    await user2
+      .populate({
+        path: "bookmarked",
+        populate: [{ path: "question" }, { path: "answer" }],
+      })
+      .execPopulate();
+    res.status(201).json(user2);
+  }
+);
+
+// @route   POST api/user/unbookmark/:id
+// @desc
+// @access  Private
+router.post(
+  "/unbookmark/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+
+    const type = req.body.type;
+
+    if (type === "question") {
+
+      if (
+        question.bookmarkUsersId.filter(
+          (item) => item.toString() === req.user.id
+        ).length === 0
+      ) {
+        return res.status(404).json({
+          notBookmarked: "Not  bookmarked Yet  , Please Be attentive !!!",
+        });
+      }
+      const removeIndex = question.bookmarkUsersId
+        .map((item) => item.toString())
+        .indexOf(req.user.id);
+
+      //Splice out of array
+      question.bookmarkUsersId.splice(removeIndex, 1);
+    }
+
+    if (type === "answer") {
+      
+
+      if (
+        answer.bookmarkUsersId.filter((item) => item.toString() === req.user.id)
+          .length === 0
+      ) {
+        return res.status(404).json({
+          notBookmarked: "Not  bookmarked Yet  , Please Be attentive !!!",
+        });
+      }
+      const removeIndex = answer.bookmarkUsersId
+        .map((item) => item.toString())
+        .indexOf(req.user.id);
+
+      //Splice out of array
+      answer.bookmarkUsersId.splice(removeIndex, 1);
+    }
+
+    console.log(type);
+    const user2 = await user.save();
+    await user2.populate(
+      {
+    path: "bookmarked",
+    populate:[{path:"question"},{path:"answer"}]
+      }
+    )
+    .execPopulate();
+    res.status(201).json(user2);
+  }
+);
 module.exports = router;

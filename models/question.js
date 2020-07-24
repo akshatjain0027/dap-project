@@ -17,6 +17,12 @@ var QuestionSchema = new Schema(
         ref: "Answer",
       },
     ],
+    bookmarkUsersId:[
+      {type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+
+      }
+    ]
   },
   {
     timestamps: true,

@@ -42,7 +42,13 @@ var AnswerSchema = new Schema(
     ],
     image:{
       type:String
-    }
+    },
+    bookmarkUsersId:[
+      {type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+
+      }
+    ]
   },
   {
     timestamps: true,
