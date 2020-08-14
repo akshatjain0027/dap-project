@@ -31,13 +31,23 @@ class QuestionDialog extends Reflux.Component{
         super(props);
         this.store = QuestionStore;
     }
+
+    componentDidMount(){
+        if(this.props.editQuestionId && this.props.editQuestion){
+            this.setState({
+                question: this.props.editQuestion,
+            })
+        }
+    }
     
     handleChange = event => {
         Actions.questionInputChange(event.target.value)
     }
 
     handleAskButtonClick = () => {
-        Actions.askQuestion();
+        const { question } = this.state;
+        const { editQuestionId } = this.props;
+        Actions.askQuestion(this.props.type, question, editQuestionId);
         this.props.handleClose();
     }
 
@@ -47,7 +57,7 @@ class QuestionDialog extends Reflux.Component{
             <CustDialog open={handleOpen} onClose={handleClose}>
                 <div className={classes.dialogContainer}>
                     <Typography variant="h4" className={classes.dialogHeading}>
-                        Ask Your Question
+                        {this.props.type && this.props.type === 'edit'? "Edit": "Ask"} Your Question
                     </Typography>
                     <TextField
                         label="Question"
@@ -62,7 +72,7 @@ class QuestionDialog extends Reflux.Component{
                         autoComplete="off"
                     />
                     <Button variant="contained" color="primary" disabled={this.state.question === ""} onClick={this.handleAskButtonClick} className={classes.dialogButton}>
-                        Ask
+                        {this.props.type && this.props.type === 'edit'? "Edit": "Ask"}
                     </Button>
                 </div>  
             </CustDialog>

@@ -8,6 +8,7 @@ import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import { showNotification } from '../../notifications/Notification';
 import AnswerFormDialog from '../../components/AnswerDialog/answerFormDialog';
 import { LoginMessageDialog } from '../../components/LoginMessageDialog/LoginMessageDialog';
+import QuestionDialog from '../../components/QuestionDialog/questionDialog';
 
 const styles = theme => ({
     name: {
@@ -44,16 +45,17 @@ class ProfilePage extends Reflux.Component {
         super(props);
         this.state = {
             answerDialogOpen: false,
-            showLoginMessageDialog: false
+            showLoginMessageDialog: false,
+            questionDialogOpen: false
         }
         this.store = ProfilePageStore;
     }
 
     componentDidMount() {
-        if(localStorage.getItem('isAuthenticated')){
+        if (localStorage.getItem('isAuthenticated')) {
             ProfilePageActions.initStore();
         }
-        else{
+        else {
             showNotification('You need to login first!', 'error');
             setInterval(() => {
                 window.location.pathname = "/";
@@ -63,6 +65,18 @@ class ProfilePage extends Reflux.Component {
 
     handleChange = (event, newValue) => {
         ProfilePageActions.indexChange(newValue)
+    }
+
+    handleQuestionDialogOpen = () => {
+        this.setState({
+            questionDialogOpen: true
+        });
+    }
+
+    handleWuestionDialogClose = () => {
+        this.setState({
+            questionDialogOpen: false
+        });
     }
 
     handleAnswerDialogClose = () => {
@@ -89,7 +103,20 @@ class ProfilePage extends Reflux.Component {
         });
     }
 
-    handleAnswerButtonClick = (id, title, answer) => {
+    handleEditQuestionClick = (id, question) => {
+        if (localStorage.getItem("isAuthenticated")) {
+            this.setState({
+                editQuestionId: id,
+                editQuestion: question
+            })
+            this.handleQuestionDialogOpen();
+        }
+        else {
+            this.handleLoginMessageDialogOpen();
+        }
+    }
+
+    handleEditAnswerButtonClick = (id, title, answer) => {
         if (localStorage.getItem("isAuthenticated")) {
             this.setState({
                 id: id,
@@ -103,30 +130,78 @@ class ProfilePage extends Reflux.Component {
         }
     }
 
+    handleBookmarkButtonClick = (type, id) => {
+        if(localStorage.getItem("isAuthenticated")){
+            ProfilePageActions.unbookmark(type, id)
+        }
+        else {
+            this.handleLoginMessageDialogOpen()
+        }
+    }
+
     getUserQuestions = () => {
-        const { userQuestions } = this.state;
+        const { userQuestions, loggedInUser } = this.state;
         return (
             <Grid direction="row" container justify="center" spacing={5}>
-                {   
+                {
                     userQuestions.length === 0 ?
-                    <Typography variant="h2">You have not asked any questions yet</Typography>
-                    :
-                    userQuestions.map((question, index) => {
-                        return (
-                            <Card key={index} elevation={8} style={{ width: "25%", margin: "2%", padding: "8px" }}>
-                                <Box pl={1}>
-                                    <Typography varinat="caption">
-                                        {`${question.answerId.length} Answers by various authors`} 
-                                    </Typography>
+                        <Typography variant="h2">You have not asked any questions yet</Typography>
+                        :
+                        userQuestions.map((question, index) => {
+                            return (
+                                <Box width="25%" margin="2%">
+                                    <Card key={index} elevation={8} style={{ padding: "8px" }}>
+                                        <Box pl={1}>
+                                            <Typography varinat="caption">
+                                                {`${question.answerId.length} Answers by various authors`}
+                                            </Typography>
+                                        </Box>
+                                        <Box textAlign="center" p={1}>
+                                            <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white" }}>
+                                                {question.question}
+                                            </Typography>
+                                        </Box>
+                                        {
+                                            loggedInUser &&
+                                            <Box display="flex" flexDirection="row" justifyContent="center">
+                                                <Tooltip
+                                                    title={
+                                                        <Typography variant='h6'>
+                                                            Edit Question
+                                                        </Typography>
+                                                    }
+                                                    arrow
+                                                >
+                                                    <Fab
+                                                        color="secondary"
+                                                        size="small"
+                                                        style={{ marginRight: "8px" }}
+                                                        onClick={() => this.handleEditQuestionClick(question._id, question.question)}
+                                                    >
+                                                        <EditIcon fontSize="large" />
+                                                    </Fab>
+                                                </Tooltip>
+                                                <Tooltip
+                                                    title={
+                                                        <Typography variant='h6'>
+                                                            Delete Question
+                                                        </Typography>
+                                                    }
+                                                    arrow
+                                                >
+                                                    <Fab
+                                                        size="small"
+                                                        color="primary"
+                                                    >
+                                                        <DeleteIcon fontSize="large" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </Box>
+                                        }
+                                    </Card>
                                 </Box>
-                                <Box textAlign="center" p={1}>
-                                    <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white"}}>
-                                        {question.question}
-                                    </Typography>
-                                </Box>
-                            </Card>
-                        )
-                    })
+                            )
+                        })
                 }
             </Grid>
 
@@ -137,60 +212,78 @@ class ProfilePage extends Reflux.Component {
         const { userAnswers, loggedInUser } = this.state;
         const { classes } = this.props;
         return (
-            <Grid direction="column" container style={{ paddingLeft: "25%"}}>
-                {   
-                    userAnswers.length === 0 ? <Typography variant="h2">You have not answered any questions yet</Typography> 
-                    :userAnswers.map((answer, index)=>{
-                        return(
-                            <Card key={index} elevation={8}  style={{ width: "70%", marginBottom: "5%", padding: "8px"}}>
-                                <Box p={2} display="flex" flexDirection="row" justifyContent="space-between">
-                                    <Box width="80%">
-                                        <Typography variant="h4" style={{ paddingTop: "8px"}}>
-                                            {answer.title}
+            <Grid direction="column" container style={{ paddingLeft: "25%" }}>
+                {
+                    userAnswers.length === 0 ? <Typography variant="h2">You have not answered any questions yet</Typography>
+                        : userAnswers.map((answer, index) => {
+                            return (
+                                <Card key={index} elevation={8} style={{ width: "70%", marginBottom: "5%", padding: "8px" }}>
+                                    <Box p={2} display="flex" flexDirection="row" justifyContent="space-between">
+                                        <Box width="80%">
+                                            <Typography variant="h4" style={{ paddingTop: "8px" }}>
+                                                {answer.title}
+                                            </Typography>
+                                        </Box>
+                                        {
+                                            loggedInUser &&
+                                            <Box width="20%" display="flex" flexDirection="row" justifyContent="space-around">
+                                                <Tooltip
+                                                    title={
+                                                        <Typography variant='h6'>
+                                                            Edit Answer
+                                                        </Typography>
+                                                    }
+                                                    arrow
+                                                >
+                                                    <Fab
+                                                        color="secondary"
+                                                        size="medium"
+                                                        onClick={() => this.handleEditAnswerButtonClick(answer._id, answer.title, answer.answer)}
+                                                    >
+                                                        <EditIcon fontSize="large" />
+                                                    </Fab>
+                                                </Tooltip>
+                                                <Tooltip
+                                                    title={
+                                                        <Typography variant='h6'>
+                                                            Delete Answer
+                                                        </Typography>
+                                                    }
+                                                    arrow
+                                                >
+                                                    <Fab
+                                                        size="medium"
+                                                        color="primary"
+                                                    >
+                                                        <DeleteIcon fontSize="large" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </Box>
+                                        }
+
+                                    </Box>
+                                    <Box p={2}>
+                                        <Typography variant="h6">
+                                            {answer.answer}
                                         </Typography>
                                     </Box>
-                                    {
-                                        loggedInUser &&
-                                        <Box width="20%" display="flex" flexDirection="row" justifyContent="space-around">
-                                            <Fab
-                                                color="secondary"
-                                                size="medium"
-                                                onClick={() => this.handleAnswerButtonClick(answer._id, answer.title, answer.answer)}
-                                            >
-                                                <EditIcon fontSize="large" />
-                                            </Fab>
-                                            <Fab
-                                                size="medium"
-                                                color="primary"
-                                            >
-                                                <DeleteIcon fontSize="large" />
-                                            </Fab>
-                                        </Box> 
-                                    }
-                                      
-                                </Box>
-                                <Box p={2}>
-                                    <Typography variant="h6">
-                                        {answer.answer}
-                                    </Typography>
-                                </Box>
-                                <Box p={2} display="flex" flexDirection="row" >
-                                    <Chip 
-                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.upVote.length}</Avatar>} 
-                                        label="UPVOTES"
-                                        variant="outlined"
-                                        className={classes.chip}
-                                    />
-                                    <Chip 
-                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.commentId.length}</Avatar>} 
-                                        label="COMMENTS"
-                                        variant="outlined"
-                                        className={classes.chip}
-                                    />
-                                </Box>
-                            </Card>
-                        )
-                    })
+                                    <Box p={2} display="flex" flexDirection="row" >
+                                        <Chip
+                                            avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.upVote.length}</Avatar>}
+                                            label="UPVOTES"
+                                            variant="outlined"
+                                            className={classes.chip}
+                                        />
+                                        <Chip
+                                            avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.commentId.length}</Avatar>}
+                                            label="COMMENTS"
+                                            variant="outlined"
+                                            className={classes.chip}
+                                        />
+                                    </Box>
+                                </Card>
+                            )
+                        })
                 }
             </Grid>
         )
@@ -198,43 +291,47 @@ class ProfilePage extends Reflux.Component {
 
     getBookmarkedQuestions = () => {
         const { bookmarkedQuestions, loggedInUser } = this.state;
-        return(
-            <Grid direction="column" container style={{ paddingLeft: "20%"}}>
-                {   
+        return (
+            <Grid direction="column" container style={{ paddingLeft: "20%" }}>
+                {
                     bookmarkedQuestions.length === 0 ?
-                    <Typography variant="h2" style={{ color: "white", textAlign: "center", margin: "auto"}}>You have not bookmarked any questions yet</Typography>
-                    :
-                    bookmarkedQuestions.map((question, index) => {
-                        return (
-                            <Card key={index} elevation={8} style={{ width: "75%", marginBottom: "5%",padding: "8px" }}>
-                                <Box pl={1}>
-                                    <Typography varinat="caption">
-                                        {`${question.answerId.length} Answers by various authors`} 
-                                    </Typography>
-                                </Box>
-                                <Box p={1} display="flex" flexDirection="row" justifyContent="space-between">
-                                    <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white"}}>
-                                        {question.question}
-                                    </Typography>
-                                    {
-                                        loggedInUser && 
-                                        <Tooltip
-                                            title={
-                                                <Typography variant='h6'>
-                                                    Remove Bookmark
-                                            </Typography>
-                                            }
-                                            arrow
-                                        >
-                                            <Fab size="small" color="primary">
-                                                <BookmarkBorderIcon fontSize="small" />
-                                            </Fab>
-                                        </Tooltip>
-                                    }
-                                </Box>
-                            </Card>
-                        )
-                    })
+                        <Typography variant="h2" style={{ color: "white", textAlign: "center", margin: "auto" }}>You have not bookmarked any questions yet</Typography>
+                        :
+                        bookmarkedQuestions.map((question, index) => {
+                            return (
+                                <Card key={index} elevation={8} style={{ width: "75%", marginBottom: "5%", padding: "8px" }}>
+                                    <Box pl={1}>
+                                        <Typography varinat="caption">
+                                            {`${question.answerId.length} Answers by various authors`}
+                                        </Typography>
+                                    </Box>
+                                    <Box p={1} display="flex" flexDirection="row" justifyContent="space-between">
+                                        <Typography variant="h4" component={Link} href={`/question/${question._id}`} style={{ color: "white" }}>
+                                            {question.question}
+                                        </Typography>
+                                        {
+                                            loggedInUser &&
+                                            <Tooltip
+                                                title={
+                                                    <Typography variant='h6'>
+                                                        Remove Bookmark
+                                                    </Typography>
+                                                }
+                                                arrow
+                                            >
+                                                <Fab 
+                                                    size="small" 
+                                                    color="primary"
+                                                    onClick={() => this.handleBookmarkButtonClick("question", question._id)}
+                                                >
+                                                    <BookmarkBorderIcon fontSize="small" />
+                                                </Fab>
+                                            </Tooltip>
+                                        }
+                                    </Box>
+                                </Card>
+                            )
+                        })
                 }
             </Grid>
         )
@@ -244,61 +341,62 @@ class ProfilePage extends Reflux.Component {
         const { bookmarkedAnswers, loggedInUser } = this.state;
         const { classes } = this.props;
         return (
-            <Grid direction="column" container style={{ paddingLeft: "25%"}}>
-                {   
-                    bookmarkedAnswers.length === 0 ? <Typography variant="h2">You have not bookmarked any answer.</Typography> 
-                    :bookmarkedAnswers.map((answer, index)=>{
-                        return(
-                            <Card key={index} elevation={8}  style={{ width: "70%", marginBottom: "5%", padding: "8px"}}>
-                                <Box p={2} display="flex" flexDirection="row" justifyContent="space-between">
-                                    <Box width="80%">
-                                        <Typography variant="h4" style={{ paddingTop: "8px"}}>
-                                            {answer.title}
+            <Grid direction="column" container style={{ paddingLeft: "25%" }}>
+                {
+                    bookmarkedAnswers.length === 0 ? <Typography variant="h2" style={{ color: "white", textAlign: "center", margin: "auto" }}>You have not bookmarked any answer.</Typography>
+                        : bookmarkedAnswers.map((answer, index) => {
+                            return (
+                                <Card key={index} elevation={8} style={{ width: "70%", marginBottom: "5%", padding: "8px" }}>
+                                    <Box p={2} display="flex" flexDirection="row" justifyContent="space-between">
+                                        <Box width="80%">
+                                            <Typography variant="h4" style={{ paddingTop: "8px" }}>
+                                                {answer.title}
+                                            </Typography>
+                                        </Box>
+                                        {
+                                            loggedInUser &&
+                                            <Box>
+                                                <Tooltip
+                                                    title={
+                                                        <Typography variant='h6'>
+                                                            Remove Bookmark
+                                                        </Typography>
+                                                    }
+                                                    arrow
+                                                >
+                                                    <Fab
+                                                        size="medium"
+                                                        color="primary"
+                                                        onClick={() => this.handleBookmarkButtonClick("answer", answer._id)}
+                                                    >
+                                                        <BookmarkBorderIcon fontSize="large" />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </Box>
+                                        }
+                                    </Box>
+                                    <Box p={2}>
+                                        <Typography variant="h6">
+                                            {answer.answer}
                                         </Typography>
                                     </Box>
-                                    {
-                                        loggedInUser &&
-                                        <Box>
-                                            <Tooltip
-                                                title={
-                                                    <Typography variant='h6'>
-                                                        Remove Bookmark
-                                            </Typography>
-                                                }
-                                                arrow
-                                            >
-                                                <Fab
-                                                    size="medium"
-                                                    color="primary"
-                                                >
-                                                    <BookmarkBorderIcon fontSize="large" />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Box>
-                                    }                                     
-                                </Box>
-                                <Box p={2}>
-                                    <Typography variant="h6">
-                                        {answer.answer}
-                                    </Typography>
-                                </Box>
-                                <Box p={2} display="flex" flexDirection="row" >
-                                    <Chip 
-                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.upVote.length}</Avatar>} 
-                                        label="UPVOTES"
-                                        variant="outlined"
-                                        className={classes.chip}
-                                    />
-                                    <Chip 
-                                        avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.commentId.length}</Avatar>} 
-                                        label="COMMENTS"
-                                        variant="outlined"
-                                        className={classes.chip}
-                                    />
-                                </Box>
-                            </Card>
-                        )
-                    })
+                                    <Box p={2} display="flex" flexDirection="row" >
+                                        <Chip
+                                            avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.upVote.length}</Avatar>}
+                                            label="UPVOTES"
+                                            variant="outlined"
+                                            className={classes.chip}
+                                        />
+                                        <Chip
+                                            avatar={<Avatar style={{ fontSize: "1rem" }}>{answer.commentId.length}</Avatar>}
+                                            label="COMMENTS"
+                                            variant="outlined"
+                                            className={classes.chip}
+                                        />
+                                    </Box>
+                                </Card>
+                            )
+                        })
                 }
             </Grid>
         )
@@ -307,13 +405,15 @@ class ProfilePage extends Reflux.Component {
     render() {
         const { loading, userData, loggedInUser } = this.state;
         const { classes } = this.props;
-        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.id} type="edit" title={this.state.title} answer={this.state.answer}/>
+        const answerDialog = <AnswerFormDialog handleOpen={this.state.answerDialogOpen} handleClose={this.handleAnswerDialogClose} questionId={this.state.id} type="edit" title={this.state.title} answer={this.state.answer} />
         const loginMessageDialog = <LoginMessageDialog handleOpen={this.state.showLoginMessageDialog} handleClose={this.handleLoginMessageDialogClose} />
+        const questionDialog = <QuestionDialog handleOpen={this.state.questionDialogOpen} handleClose={this.handleWuestionDialogClose} type="edit" editQuestionId={this.state.editQuestionId} editQuestion={this.state.editQuestion} />;
 
         return loading ? <div><CircularProgress style={{ margin: "25% 50%" }} size={100} thickness={2.5} /></div> : (
             <Grid container>
                 {this.state.answerDialogOpen && answerDialog}
                 {this.state.showLoginMessageDialog && loginMessageDialog}
+                {this.state.questionDialogOpen && questionDialog}
                 <Grid direction="row" container style={{ margin: "8% 5%" }}>
                     <Grid container direction="column" md={3} alignItems="center">
                         <Box alignItems="center" width="100%">
@@ -326,15 +426,15 @@ class ProfilePage extends Reflux.Component {
                         </Box>
                         <Box width="100%" textAlign="center">
                             {
-                                loggedInUser ? 
-                                <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
-                                    EDIT PROFILE
+                                loggedInUser ?
+                                    <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
+                                        EDIT PROFILE
                                 </Button> :
-                                <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
-                                    FOLLOW
+                                    <Button color="secondary" variant="contained" style={{ width: "70%", fontSize: "1.2rem" }}>
+                                        FOLLOW
                                 </Button>
                             }
-                            
+
                         </Box>
                     </Grid>
                     <Grid width="100%" md={9}>

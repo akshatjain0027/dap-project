@@ -22,14 +22,34 @@ class QuestionStore extends Reflux.Store{
             question: question
         })
     }
-    onAskQuestion() {
+    onAskQuestion(type = 'ask',question, id) {
         const data = {
-            question: this.state.question
+            question: question
         }
-        this.APIService.askQuestion(data)
+        if(type === 'edit'){
+            this.APIService.updateQuestion(id,data)
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        question: ""
+                    })
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000);
+                    showNotification("Successfully edited your question.", "success")
+                }
+                else {
+                    throw new Error();
+                }
+            })
+            .catch(error => {
+                showNotification("Unable to edit your question!", "error")
+            })
+        }
+        else{
+            this.APIService.askQuestion(data)
             .then(response => {
                 if (response.status === 201) {
-                    console.log("question posted successfully")
                     this.setState({
                         question: ""
                     })
@@ -45,6 +65,7 @@ class QuestionStore extends Reflux.Store{
             .catch(error => {
                 showNotification("Unable to post your question!", "error")
             })
+        }       
     }
 }
 export default QuestionStore;
